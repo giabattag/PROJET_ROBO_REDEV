@@ -1,7 +1,0 @@
-MODELS LIST:
-
-- model old group
-- model passively folded with springs
-- model passive "soft" arms
-- model active with turning joints
-- model origami
