@@ -46,6 +46,10 @@ Mu =...
 px = larm*cos(pi/4 + THT) - kd_rev*sin(pi/4 + THT);
 py = larm*sin(pi/4 + THT) + kd_rev*cos(pi/4 + THT);
 pz = l*sqrt(2)/2*sin(THT);
+
+drone_params.motors.px = px;
+drone_params.motors.py = py;
+drone_params.motors.pz = pz;
 M2f = ...
      [0      0       kt       kt;
       px*kt     -px*kt     -l/2*kt    l/2*kt;

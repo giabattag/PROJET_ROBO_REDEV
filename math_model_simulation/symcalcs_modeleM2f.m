@@ -55,12 +55,11 @@ Rotr = ...
      0      -sin(x1)    cos(x1)*cos(x3)];
 
 % rotational dynamics
-ddeta = I \ (MB - cross(deta,I*deta) - cross(deta,[0; 0; -Jr*Wr]));
+ddeta = I \ (MB - cross(deta,I*deta) - cross(deta,[0; 0; Jr*Wr]));
 
 % translational dynamics
 ddx = [0; 0; g] + Rot*FB/m;
 
-%% CONTROL
 
 
 
