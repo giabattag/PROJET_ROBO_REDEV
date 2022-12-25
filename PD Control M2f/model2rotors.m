@@ -5,6 +5,7 @@ u2=[u(2);u(3);u(4)];
 phi=u(5);
 tht=u(6);
 psi=u(7);
+w = u(8:10);
 
 % 2rotors
 px = larm*cos(pi/4 + THT) - kd_rev*sin(pi/4 + THT);
@@ -53,11 +54,16 @@ ddz = a(3);
 % ddy=g*(tht*sin(psi)-phi*cos(psi));
 % ddz=-g+u1/m;
 
-dBangles=I \ u2;
+% dBangles=I \ u2;
+% 
+% dp=dBangles(1);
+% dq=dBangles(2);
+% dr=dBangles(3);
 
-dp=dBangles(1);
-dq=dBangles(2);
-dr=dBangles(3);
+dw = I \ (M - cross(w,I*w));
+dp = dw(1);
+dq = dw(2);
+dr = dw(3);
 
 op=[ddx;ddy;ddz;dp;dq;dr];
 
