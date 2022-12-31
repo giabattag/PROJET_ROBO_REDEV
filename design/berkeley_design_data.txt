@@ -1,0 +1,22 @@
+BERKELEY DESIGN DATA
+
+8 in propellers spaced 24 cm (DJI F330 frame)
+arms and central body printed using PLA, connected by free-rotating 4 mm steel bolts
+https://www.modeltoy.it/product_info.php?products_id=10222
+
+Crazyflie 2.0 flight controller
+https://www.bitcraze.io/products/old-products/crazyflie-2-0/
+(commands at 500 Hz)
+
+four DYS SN30A ESCs (electronic speed controllers)
+https://dm-3dracing.com/products/dys-esc-usb-linker-programmer-for-sn16a-sn20a-sn30a-sn40a-bl16a-bl20a-bl30a-bl40a
+
+three cell, 40C, 1500 mAh LiPo battery
+https://www.himotoracing.it/sito/prodotto/batteria-lipo-1500mah-7-4v-2s-cont-25cburst-40c-lunghezza-95cm-larghezza-3cm-altezza-13cm/
+
+four EMAX MT2208 brushless motors
+https://emaxmodel.com/products/emax-mt2208-multirotor-motor-cooling-series#
+four Gemfan 8038 propellers
+https://www.drone-fpv-racer.com/en/gemfan-8038-2-blades-polycarbonate-2pcs-5149.html
+
+motion capture system + onboard gyroscope (IMU)
