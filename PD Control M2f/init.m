@@ -1,19 +1,8 @@
 clear all
 close all
-global m I g tuning_parameter kt kd kd_rev l THT larm;
+global m I g tuning_parameter kt kd kd_rev l THT larm P2f M2f Mu Pu
 
-m = 0.18;
-I = [0.00025,   0,          2.55e-6;
-     0,         0.000232,   0;
-     2.55e-6,   0,          0.0003738];
-g=9.8;
-kt = 1;
-kd = 1e-3;
-kd_rev = 5e-3;
-tuning_parameter=100;
-d=1;
-l = d*sqrt(2); larm = d;
-THT = 11.9*pi/180;
+init_data
 
 sim('quad2rotors_control');
 

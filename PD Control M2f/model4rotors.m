@@ -1,5 +1,5 @@
-function op=model2rotors(u)
-global m I g kt kd kd_rev l THT larm P2f M2f
+function op=model4rotors(u)
+global m I g kt kd kd_rev l THT larm Mu Pu
 u1=u(1);
 u2=[u(2);u(3);u(4)];
 phi=u(5);
@@ -7,7 +7,7 @@ tht=u(6);
 psi=u(7);
 w = u(8:10);
 
-FM = M2f*inv(P2f)*[u1; u2];
+FM = Mu*inv(Pu)*[u1; u2];
 F = FM(1);
 M = FM(2:4);
 
