@@ -62,7 +62,7 @@ M4f = ...
      -py*kt    py*kt      py*kt    -py*kt;
       -pz     -pz      pz     pz];
 
-drone_params.control.allocation_matrix = M2f;
+drone_params.control.allocation_matrix = Mu;
 drone_params.control.position.kp = 2;
 drone_params.control.position.kd = 1.5;
 drone_params.control.velocity.kp = 2;
