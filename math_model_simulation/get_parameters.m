@@ -8,7 +8,7 @@ function [out] = setDefaultDroneParams(nDrones)
 
 %% Parameter Structure
 % mechanical properties
-drone_params.mechanical.m = 0.624;
+drone_params.mechanical.m = 1;
 drone_params.mechanical.I = [3,0,0;
                              0,3,0;
                              0,0,6]*1e-3;
