@@ -4,3 +4,17 @@ Crazyflie 2.0 flight controller
 https://www.generationrobots.com/fr/403746-nano-drone-programmable-crazyflie-21-uav-getting-started-bundle.html
 https://hackspark.fr/en/search?controller=search&order=product.position.desc&s=crazyflie
 
+EMAX MT2208
+https://www.amazon.fr/dgtrhted-Moteur-Brosse-MT2208-multicoptrique/dp/B08PVGQX6Z/ref=sr_1_4?__mk_fr_FR=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=OS35RI7DE2SY&keywords=emax+mt2208&qid=1673335580&sprefix=emax+mt2208%2Caps%2C93&sr=8-4
+
+8in helices
+https://www.amazon.fr/SDFIOSDOI-Convient-Aerobatics-Airplane-H%C3%A9licopt%C3%A8res/dp/B08VGL8S77/ref=sr_1_5?__mk_fr_FR=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=14KPMDWAIQW5P&keywords=8in%2Bhelice&qid=1673335930&sprefix=8in%2Bhelic%2Caps%2C84&sr=8-5&th=1
+
+three cell, 40C, 1500 mAh LiPo battery
+https://www.himotoracing.it/sito/prodotto/batteria-lipo-1500mah-7-4v-2s-cont-25cburst-40c-lunghezza-95cm-larghezza-3cm-altezza-13cm/
+
+
+ESC DYS SN30A
+https://www.thanksbuyer.com/dys-sn30a-esc-brushless-motor-speed-controller-2-6s-lipo-for-multicopter-quadcopter-39299
+https://dm-3dracing.com/search?type=product&q=DYS+SN30A+esc
+
