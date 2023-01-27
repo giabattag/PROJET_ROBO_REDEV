@@ -1,12 +1,15 @@
-%#ok<*GVMIS,*NUSED>
 clear all
 close all
-global m I g tuning_parameter kt kd kd_rev l THT larm P2f M2f Mu Pu  
+global m I g tuning_parameter
 
-init_data
-
-sim('quad2rotors_control');
-
+m = 0.18;
+I = [0.00025,   0,          2.55e-6;
+     0,         0.000232,   0;
+     2.55e-6,   0,          0.0003738];
+g=9.8;
+tuning_parameter=100;
+sim('quad_control');
+d=1;
 x=xyz(:,1);y=xyz(:,2);z=xyz(:,3);
 phi=phi_tht_psi(:,1);tht=phi_tht_psi(:,2);psi=phi_tht_psi(:,3);
 phiC=angc(:,1);thtC=angc(:,2);psiC=angc(:,3);
@@ -133,13 +136,13 @@ grid;
 title('x(m) vs time(s)')
 legend('Actual Measure','Reference')
 subplot(322);
-plot(t,(180/pi)*phi,'-g','Linewidth',2);
-hold on;
 plot(t,(180/pi)*phiC,'-r','Linewidth',1);
+hold on;
+plot(t,(180/pi)*phi,'-g','Linewidth',3);
 hold off;
 grid;
 title('roll (in deg) vs time(s)');
-legend('Actual Measure','Reference')
+legend('Reference','Actual Measure')
 subplot(323);
 plot(t,y,'-g','Linewidth',2);
 hold on
@@ -149,13 +152,13 @@ grid;
 title('y(m) vs time(s)')
 legend('Actual Measure','Reference')
 subplot(324);
-plot(t,(180/pi)*tht,'-g','Linewidth',2);
-hold on;
 plot(t,(180/pi)*thtC,'-r','Linewidth',1);
+hold on;
+plot(t,(180/pi)*tht,'-g','Linewidth',3);
 hold off;
 grid;
-title('pitch (in deg) vs time(s)');
-legend('Actual Measure','Reference')
+title('Pitch (in deg) vs time(s)');
+legend('Reference','Actual Measure')
 subplot(325);
 plot(t,z,'-g','Linewidth',2);
 hold on
@@ -165,7 +168,7 @@ grid;
 title('z(m) vs time(s)');
 legend('Actual Measure','Reference')
 subplot(326);
-plot(t,(180/pi)*psi,'-g','Linewidth',2);
+plot(t,(180/pi)*psi,'-g','Linewidth',3);
 hold on;
 plot(t,ref(:,4),'-r','Linewidth',1);
 hold off;

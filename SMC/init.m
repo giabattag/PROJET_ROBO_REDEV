@@ -1,11 +1,14 @@
 %#ok<*GVMIS,*NUSED>
 clear all
 close all
-global m I g tuning_parameter kt kd kd_rev l THT larm P2f M2f Mu Pu  
+global m I g tuning_parameter kt kd kd_rev l THT larm P2f M2f Mu Pu
 
 init_data
 
-sim('quad2rotors_control');
+% four_rotors = false;
+two_rotors = false;
+
+sim('quad_control');
 
 x=xyz(:,1);y=xyz(:,2);z=xyz(:,3);
 phi=phi_tht_psi(:,1);tht=phi_tht_psi(:,2);psi=phi_tht_psi(:,3);
