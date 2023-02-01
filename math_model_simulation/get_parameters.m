@@ -8,7 +8,7 @@ function [out] = setDefaultDroneParams(nDrones)
 
 %% Parameter Structure
 % mechanical properties
-drone_params.mechanical.m = 1;
+drone_params.mechanical.m = 0.624;
 drone_params.mechanical.I = [3,0,0;
                              0,3,0;
                              0,0,6]*1e-3;
@@ -43,8 +43,8 @@ Mu =...
      l/2*kt    -l/2*kt    -l/2*kt    l/2*kt;
      kd     kd      -kd     -kd];
  
-px = larm*cos(pi/4 + THT) - kd_rev*sin(pi/4 + THT);
-py = larm*sin(pi/4 + THT) + kd_rev*cos(pi/4 + THT);
+px = larm*cos(pi/4 + THT) - kd_rev*sin(pi/4 + THT)/kt;
+py = larm*sin(pi/4 + THT) + kd_rev*cos(pi/4 + THT)/kt;
 pz = l*sqrt(2)/2*sin(THT);
 
 drone_params.motors.px = px;
@@ -54,7 +54,9 @@ M2f = ...
      [0      0       kt       kt;
       px*kt     -px*kt     -l/2*kt    l/2*kt;
       -py*kt    py*kt      -l/2*kt    l/2*kt;
-       -pz     -pz      -kd     -kd];
+       pz*kt     pz*kt      -kd     -kd];
+
+% M2f = [M2f(:,2) M2f(:,1) M2f(:,3:4)];
    
 M4f = ...
     [0      0       0       0;
@@ -62,7 +64,7 @@ M4f = ...
      -py*kt    py*kt      py*kt    -py*kt;
       -pz     -pz      pz     pz];
 
-drone_params.control.allocation_matrix = Mu;
+drone_params.control.allocation_matrix = M2f;
 drone_params.control.position.kp = 2;
 drone_params.control.position.kd = 1.5;
 drone_params.control.velocity.kp = 2;
