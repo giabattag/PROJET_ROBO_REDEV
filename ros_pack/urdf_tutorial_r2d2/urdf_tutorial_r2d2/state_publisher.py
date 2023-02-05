@@ -149,12 +149,12 @@ class StatePublisher(Node):
                 # update joint_state
                 now = self.get_clock().now()
                 joint_state.header.stamp = now.to_msg()
-                joint_state.name = ["prop_to_arm_1", "prop_to_arm_2", "prop_to_arm_3", "prop_to_arm_4"]#,'base_to_arm_1', "base_to_arm_2", "base_to_arm_3", "base_to_arm_4"]
+                joint_state.name = ["prop_to_arm_1", "prop_to_arm_2", "prop_to_arm_3", "prop_to_arm_4",'base_to_arm_1', "base_to_arm_2", "base_to_arm_3", "base_to_arm_4"]
                 joint_state.position = [0.,#self.propeller_speed.velocity[self.propeller_speed.name.index("prop_to_arm_1")],
                                         0.,#self.propeller_speed.velocity[self.propeller_speed.name.index("prop_to_arm_2")],
                                         0.,#self.propeller_speed.velocity[self.propeller_speed.name.index("prop_to_arm_3")],
-                                        0.]#,#self.propeller_speed.velocity[self.propeller_speed.name.index("prop_to_arm_4")],
-                                        #0.0, 0.0, 0.0, 0.0]
+                                        0.,#,#self.propeller_speed.velocity[self.propeller_speed.name.index("prop_to_arm_4")],
+                                        0.0, 0.0, 0.0, 0.0]
 
                 # update transform
                 # (moving in a circle with radius=2)

@@ -9,7 +9,7 @@ def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
 
-    urdf_file_name = '4arms.urdf.xacro'
+    urdf_file_name = '4arms.urdf'
     urdf = os.path.join(
         get_package_share_directory('urdf_tutorial_r2d2'),
         urdf_file_name)
