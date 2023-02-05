@@ -228,10 +228,11 @@ class StatePublisher(Node):
 
 
                 motor_to_body_wrent = Wrench()
-                motor_to_drone = self.tfBuffer.lookup_transform(motor, body_wrent.header.frame_id, rclpy.time.Time())
+                motor_to_drone = self.tfBuffer.lookup_transform(body_wrent.header.frame_id, motor, rclpy.time.Time())
                 
                 motor_to_body_wrent.force = rotate_wrt(motor_to_drone.transform.rotation, motor_wrent.wrench.force)
                 motor_to_body_wrent.torque = rotate_wrt(motor_to_drone.transform.rotation, motor_wrent.wrench.torque)
+                self.get_logger().warning("Transform  {0}".format(motor_to_drone))
 
 
 
@@ -243,11 +244,13 @@ class StatePublisher(Node):
                 gyro =  np.cross(np.array([self.State_d['t'].twist.angular.x, self.State_d['t'].twist.angular.y, self.State_d['t'].twist.angular.z])
                                 ,Jr@np.array([0, 0, wi]))
                 # self.get_logger().warning("GYRO {0}".format(gyro))
+                force_moment = np.cross(np.array([motor_to_drone.transform.translation.x, motor_to_drone.transform.translation.y, motor_to_drone.transform.translation.z]),
+                                        np.array([motor_to_body_wrent.force.x, motor_to_body_wrent.force.y, motor_to_body_wrent.force.z]))
 
 
-                body_wrent.wrench.torque.x = body_wrent.wrench.torque.x + motor_to_body_wrent.torque.x + motor_to_body_wrent.force.y*motor_to_drone.transform.translation.z - motor_to_body_wrent.force.z*motor_to_drone.transform.translation.y + gyro[0]
-                body_wrent.wrench.torque.y = body_wrent.wrench.torque.y + motor_to_body_wrent.torque.y + motor_to_body_wrent.force.z*motor_to_drone.transform.translation.x - motor_to_body_wrent.force.x*motor_to_drone.transform.translation.z + gyro[1]
-                body_wrent.wrench.torque.z = body_wrent.wrench.torque.z + motor_to_body_wrent.torque.z + motor_to_body_wrent.force.x*motor_to_drone.transform.translation.y - motor_to_body_wrent.force.y*motor_to_drone.transform.translation.x + gyro[2]
+                body_wrent.wrench.torque.x = body_wrent.wrench.torque.x + motor_to_body_wrent.torque.x + force_moment[0] + gyro[0] #motor_to_body_wrent.force.y*motor_to_drone.transform.translation.z - motor_to_body_wrent.force.z*motor_to_drone.transform.translation.y + gyro[0]
+                body_wrent.wrench.torque.y = body_wrent.wrench.torque.y + motor_to_body_wrent.torque.y + force_moment[1] + gyro[1] #motor_to_body_wrent.force.z*motor_to_drone.transform.translation.x - motor_to_body_wrent.force.x*motor_to_drone.transform.translation.z + gyro[1]
+                body_wrent.wrench.torque.z = body_wrent.wrench.torque.z + motor_to_body_wrent.torque.z + force_moment[2] + gyro[2] #motor_to_body_wrent.force.x*motor_to_drone.transform.translation.y - motor_to_body_wrent.force.y*motor_to_drone.transform.translation.x + gyro[2]
 
 
 
@@ -293,7 +296,7 @@ class StatePublisher(Node):
 
 
         try:
-            drone_to_world = self.tfBuffer.lookup_transform("drone", "odom", rclpy.time.Time())
+            drone_to_world = self.tfBuffer.lookup_transform("odom", "drone", rclpy.time.Time())
             
             drone_velocity_world = rotate_wrt(drone_to_world.transform.rotation, self.State_d["t"].twist.linear)
             drone_rotationxyz_world = rotate_wrt(drone_to_world.transform.rotation, self.State_d["t"].twist.angular)
