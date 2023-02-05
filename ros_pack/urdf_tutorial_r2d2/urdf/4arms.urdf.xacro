@@ -1,13 +1,22 @@
 <?xml version="1.0"?>
 
-<robot name="4ArmDrone"  xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="4Armdrone"  xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <material name="blue">
     <color rgba="0 0 0.8 1"/>
   </material>
 
-<xacro:property name="xd" value="-0.1"/>
-<xacro:property name="yd" value="0.05"/>
+<xacro:property name='sktX' value="0.19674"/>
+<xacro:property name='sktY' value="0.09329"/>
+<xacro:property name="xd"   value="${-sktX/2}"/>
+<xacro:property name="yd"   value="${sktY/2}"/>
+
+<xacro:property name="arm_junction" value="0.0293"/>
+<xacro:property name="arm_base" value="0.035"/>
+<xacro:property name="arm_ang" value="0.5788"/>
+<xacro:property name="arm_len" value="0.155"/>
+
+
 
   <link name="drone">
     
@@ -37,6 +46,7 @@
         <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
+      <origin xyz="0 ${0} 0"/>
     </visual>
 
     <collision>
@@ -44,6 +54,7 @@
         <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
+      <origin xyz="0 ${0} 0"/>
     </collision>
 
   </link>  
@@ -55,11 +66,11 @@
       <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
             scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin xyz="0 -0.035 0"/>
+      <origin xyz="0 ${-arm_base} 0"/>
     </visual>
 
     <collision>
-      <origin xyz="0 -0.035 0"/>
+      <origin xyz="0 ${-arm_base} 0"/>
       <geometry>
         <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
@@ -75,6 +86,7 @@
         <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
+      <origin xyz="0 ${0} 0"/>
     </visual>
 
     <collision>
@@ -82,6 +94,7 @@
         <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
+      <origin xyz="0 ${0} 0"/>
     </collision>
 
   </link>  
@@ -93,7 +106,7 @@
         <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin xyz="0 -0.035 0"/>
+      <origin xyz="0 ${-arm_base} 0"/>
     </visual>
 
     <collision>
@@ -101,7 +114,7 @@
         <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin xyz="0 -0.035 0"/>
+      <origin xyz="0 ${-arm_base} 0"/>
 
     </collision>
 
@@ -111,7 +124,7 @@
   <joint name="base_to_arm_1" type="revolute">
     <parent link="drone"/>
     <child link="arm_1"/>
-    <origin  rpy="0 0 2.15" xyz="${xd+0.029} ${yd} 0"/>
+    <origin  rpy="0 0 ${pi/2+arm_ang}" xyz="${xd+arm_junction} ${yd} 0"/>
     <axis xyz="0.0 1.0 0.0"/>
     <limit effort="1000.0" lower="0.0" upper="1.74" velocity="1000.0"/>
   </joint>
@@ -119,7 +132,7 @@
   <joint name="base_to_arm_2" type="revolute">
     <parent link="drone"/>
     <child link="arm_2"/>
-    <origin  rpy="0 0 -2.15" xyz="${xd+0.029} ${yd-0.093} 0"/>
+    <origin  rpy="0 0 -${pi/2+arm_ang}" xyz="${xd+arm_junction} ${yd-0.093} 0"/>
     <axis xyz="0.0 1.0 0.0"/>
     <limit effort="1000.0" lower="0.0" upper="1.74" velocity="1000.0"/>
   </joint>
@@ -127,7 +140,7 @@
   <joint name="base_to_arm_3" type="revolute">
     <parent link="drone"/>
     <child link="arm_3"/>
-    <origin  rpy="0 0 -1" xyz="${xd+0.165} ${yd-0.093} 0"/>
+    <origin  rpy="0 0 -${pi/2-arm_ang}" xyz="${-xd-arm_junction} ${yd-0.093} 0"/>
     <axis xyz="0.0 1.0 0.0"/>
     <limit effort="1000.0" lower="0.0" upper="1.74" velocity="1000.0"/>
   </joint>
@@ -136,7 +149,7 @@
   <joint name="base_to_arm_4" type="revolute">
     <parent link="drone"/>
     <child link="arm_4"/>
-    <origin  rpy="0 0 1" xyz="${xd+0.165} ${yd} 0"/>
+    <origin  rpy="0 0 ${pi/2-arm_ang}" xyz="${-xd-arm_junction} ${yd} 0"/>
     <axis xyz="0.0 1.0 0.0"/>
     <limit effort="1000.0" lower="0.0" upper="1.74" velocity="1000.0"/>
   </joint>
@@ -154,7 +167,7 @@
   <joint name="prop_to_arm_1" type="continuous">
     <parent link="arm_1"/>
     <child link="prop_1"/>
-    <origin  rpy="0 0 0" xyz="0.17 0.02 0.03"/>
+    <origin  rpy="0 0 0" xyz="${arm_len} ${arm_base/2} ${arm_base}"/>
     <axis xyz="0.0 0.0 1"/>
   </joint>
 
@@ -170,8 +183,8 @@
   <joint name="prop_to_arm_2" type="continuous">
     <parent link="arm_2"/>
     <child link="prop_2"/>
-    <origin  rpy="0 0 0" xyz="0.17 -0.02 0.03"/>
-    <axis xyz="0.0 0.0 -1"/>
+    <origin  rpy="0 0 0" xyz="${arm_len} ${-arm_base/2} ${arm_base}"/>
+    <axis xyz="0.0 0.0 1"/>
   </joint>
 
   <link name="prop_3">
@@ -186,7 +199,7 @@
   <joint name="prop_to_arm_3" type="continuous">
     <parent link="arm_3"/>
     <child link="prop_3"/>
-    <origin  rpy="0 0 0" xyz="0.17 0.02 0.03"/>
+    <origin  rpy="0 0 0" xyz="${arm_len} ${arm_base/2} ${arm_base}"/>
     <axis xyz="0.0 0.0 1"/>
   </joint>
 
@@ -202,8 +215,8 @@
   <joint name="prop_to_arm_4" type="continuous">
     <parent link="arm_4"/>
     <child link="prop_4"/>
-    <origin  rpy="0 0 0" xyz="0.17 -0.02 0.03"/>
-    <axis xyz="0.0 0.0 -1"/>
+    <origin  rpy="0 0 0" xyz="${arm_len} ${-arm_base/2} ${arm_base}"/>
+    <axis xyz="0.0 0.0 1"/>
   </joint>
 
 </robot>

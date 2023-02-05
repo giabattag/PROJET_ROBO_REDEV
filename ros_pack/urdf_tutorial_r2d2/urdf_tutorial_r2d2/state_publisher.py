@@ -8,6 +8,7 @@ from sensor_msgs.msg import JointState
 from tf2_ros import TransformBroadcaster, TransformStamped, TransformListener, Buffer
 import tf2_ros
 
+import time
 
 # from functions import euler_to_quaternion, quaternion_to_euler_angle, rotate_wrt
 
@@ -139,8 +140,8 @@ class StatePublisher(Node):
 
         print("ESTADOO")
 
+ 
         
-
         
         try:
             while rclpy.ok():
@@ -158,8 +159,10 @@ class StatePublisher(Node):
 
                 # update transform
                 # (moving in a circle with radius=2)
-
-                self.drone_physics()
+                start_trans = [frame for frame in ["prop_1", "prop_2", "prop_3", "prop_4"] if self.tfBuffer.can_transform("prop_1","odom", rclpy.time.Time())]
+                # self.get_logger().info("Can Start Trans {0}".format(start_trans))
+                if len(start_trans)==4:
+                    self.drone_physics()
                 odom_trans.header.stamp = now.to_msg()
 
                 odom_trans.transform.translation.x = self.State_d['p'].pose.position.x
@@ -175,7 +178,7 @@ class StatePublisher(Node):
                 # send the joint state and transform
                 self.joint_pub.publish(joint_state)
                 self.broadcaster.sendTransform(odom_trans)
-                self.get_logger().info("{0} Z".format(self.State_d["p"].pose.position.z))
+                self.get_logger().info("Drone in world {0}".format(self.State_d["p"].pose))
 
 
                 # Create new robot state
@@ -208,6 +211,7 @@ class StatePublisher(Node):
         m = 1.0 #Drone mass
         g = 10.0 # gravity
         inverI = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        Jr = np.diag([1, 1, 1]) #Rotor inertia
 
         body_wrent.wrench.force.z = -m*g
 
@@ -235,23 +239,32 @@ class StatePublisher(Node):
                 body_wrent.wrench.force.y = body_wrent.wrench.force.y + motor_to_body_wrent.force.y
                 body_wrent.wrench.force.z = body_wrent.wrench.force.z + motor_to_body_wrent.force.z
 
-                body_wrent.wrench.torque.x = body_wrent.wrench.torque.x + motor_to_body_wrent.force.y*motor_to_drone.transform.translation.z - motor_to_body_wrent.force.z*motor_to_drone.transform.translation.y + motor_to_body_wrent.torque.x 
-                body_wrent.wrench.torque.y = body_wrent.wrench.torque.y + motor_to_body_wrent.force.z*motor_to_drone.transform.translation.x - motor_to_body_wrent.force.x*motor_to_drone.transform.translation.z + motor_to_body_wrent.torque.y
-                body_wrent.wrench.torque.z = body_wrent.wrench.torque.z + motor_to_body_wrent.force.x*motor_to_drone.transform.translation.y - motor_to_body_wrent.force.y*motor_to_drone.transform.translation.x + motor_to_body_wrent.torque.z
+                #GYROSCOPE EFFECT
+                gyro =  np.cross(np.array([self.State_d['t'].twist.angular.x, self.State_d['t'].twist.angular.y, self.State_d['t'].twist.angular.z])
+                                ,Jr@np.array([0, 0, wi]))
+                # self.get_logger().warning("GYRO {0}".format(gyro))
+
+
+                body_wrent.wrench.torque.x = body_wrent.wrench.torque.x + motor_to_body_wrent.torque.x + motor_to_body_wrent.force.y*motor_to_drone.transform.translation.z - motor_to_body_wrent.force.z*motor_to_drone.transform.translation.y + gyro[0]
+                body_wrent.wrench.torque.y = body_wrent.wrench.torque.y + motor_to_body_wrent.torque.y + motor_to_body_wrent.force.z*motor_to_drone.transform.translation.x - motor_to_body_wrent.force.x*motor_to_drone.transform.translation.z + gyro[1]
+                body_wrent.wrench.torque.z = body_wrent.wrench.torque.z + motor_to_body_wrent.torque.z + motor_to_body_wrent.force.x*motor_to_drone.transform.translation.y - motor_to_body_wrent.force.y*motor_to_drone.transform.translation.x + gyro[2]
 
 
 
 
-                self.get_logger().info("Wrench {0} {1} {2}".format(body_wrent.wrench.force.x,body_wrent.wrench.force.y,body_wrent.wrench.force.z))
 
             except Exception as e:
-                self.get_logger().info("ERRRORRR FORCE  {0}".format(e))
+                self.get_logger().warning("ERRRORRR FORCE  {0}".format(e))
 
                 continue
 
+        self.get_logger().info("Force {0} {1} {2}".format(body_wrent.wrench.force.x,body_wrent.wrench.force.y,body_wrent.wrench.force.z))
+        self.get_logger().info("Torque {0} {1} {2}".format(body_wrent.wrench.torque.x,body_wrent.wrench.torque.y,body_wrent.wrench.torque.z))
+
+
 
         self.State_d["a"].accel.linear.z = 1/m*(body_wrent.wrench.force.z)
-        self.State_d["t"].twist.linear.z = 1/self.rate*(self.State_d["a"].accel.linear.z)
+        self.State_d["t"].twist.linear.z += 1/self.rate*(self.State_d["a"].accel.linear.z)
 
         self.State_d["a"].accel.linear.y = 1/m*(body_wrent.wrench.force.y)
         self.State_d["t"].twist.linear.y += 1/self.rate*(self.State_d["a"].accel.linear.y)
@@ -259,15 +272,15 @@ class StatePublisher(Node):
         self.State_d["a"].accel.linear.x = 1/m*(body_wrent.wrench.force.x)
         self.State_d["t"].twist.linear.x += 1/self.rate*(self.State_d["a"].accel.linear.x)
 
-        self.get_logger().info("Aceel: {0} {1} {2}".format(self.State_d["a"].accel.linear.x, self.State_d["a"].accel.linear.y, self.State_d["a"].accel.linear.z))
-        self.get_logger().info("SPEED: {0} {1} {2}".format(self.State_d["t"].twist.linear.x, self.State_d["t"].twist.linear.y, self.State_d["t"].twist.linear.z))
+        self.get_logger().info("Lin - Aceel: {0} {1} {2}".format(self.State_d["a"].accel.linear.x, self.State_d["a"].accel.linear.y, self.State_d["a"].accel.linear.z))
+        self.get_logger().info("Lin - SPEED: {0} {1} {2}".format(self.State_d["t"].twist.linear.x, self.State_d["t"].twist.linear.y, self.State_d["t"].twist.linear.z))
 
 
         torq = np.array([body_wrent.wrench.torque.x, body_wrent.wrench.torque.y, body_wrent.wrench.torque.z])
         ac = inverI@(torq)
         
         self.State_d["a"].accel.angular.z = ac[2]
-        self.State_d["t"].twist.angular.z = 1/self.rate*(self.State_d["a"].accel.angular.z)
+        self.State_d["t"].twist.angular.z += 1/self.rate*(self.State_d["a"].accel.angular.z)
 
         self.State_d["a"].accel.angular.y = ac[1]
         self.State_d["t"].twist.angular.y += 1/self.rate*(self.State_d["a"].accel.angular.y)
@@ -275,13 +288,16 @@ class StatePublisher(Node):
         self.State_d["a"].accel.angular.x = ac[0]
         self.State_d["t"].twist.angular.x += 1/self.rate*(self.State_d["a"].accel.angular.x)
 
+        self.get_logger().info("Ang - Aceel: {0} {1} {2}".format(self.State_d["a"].accel.angular.x, self.State_d["a"].accel.angular.y, self.State_d["a"].accel.angular.z))
+        self.get_logger().info("Ang - SPEED: {0} {1} {2}".format(self.State_d["t"].twist.angular.x, self.State_d["t"].twist.angular.y, self.State_d["t"].twist.angular.z))
+
 
         try:
             drone_to_world = self.tfBuffer.lookup_transform("drone", "odom", rclpy.time.Time())
             
             drone_velocity_world = rotate_wrt(drone_to_world.transform.rotation, self.State_d["t"].twist.linear)
             drone_rotationxyz_world = rotate_wrt(drone_to_world.transform.rotation, self.State_d["t"].twist.angular)
-            drone_rottationquat_world = euler_to_quaternion(drone_rotationxyz_world.x, drone_rotationxyz_world.y, drone_rotationxyz_world.z)
+            drone_rottationquat_world = euler_to_quaternion(1/self.rate*drone_rotationxyz_world.x, 1/self.rate*drone_rotationxyz_world.y, 1/self.rate*drone_rotationxyz_world.z)
 
             self.State_d["p"].pose.position.x += 1/self.rate*(drone_velocity_world.x)     
             self.State_d["p"].pose.position.y += 1/self.rate*(drone_velocity_world.y)
@@ -291,7 +307,7 @@ class StatePublisher(Node):
 
 
         except Exception as e:
-            self.get_logger().info("ERRRORRR POSE  {0}".format(e))
+            self.get_logger().warning("ERRRORRR POSE  {0}".format(e))
 
 
 
