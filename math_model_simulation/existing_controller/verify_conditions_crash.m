@@ -1,4 +1,4 @@
-function [verify_u, verify_2f, conditions_u,conditions_2f] = verify_conditions(thrust,moments)
+function [verify_u, verify_2f, conditions_u,conditions_2f] = verify_conditions(thrust,moments,omega_props)
 
 f = abs(thrust);
 tx = abs(moments(1));
@@ -28,12 +28,15 @@ conditions_u = [...
              drone_params_control_conditions_unfolded_arm2(f,tx,ty,tz) > 0;
              drone_params_control_conditions_unfolded_arm3(f,tx,ty,tz) > 0;
              drone_params_control_conditions_unfolded_arm4(f,tx,ty,tz) > 0;
+             omega_props > 0;
                  ];
 conditions_2f = [...
              drone_params_control_conditions_folded2_arm1(f,tx,ty,tz) > 0;
              drone_params_control_conditions_folded2_arm2(f,tx,ty,tz) > 0;
              drone_params_control_conditions_folded2_arm3(f,tx,ty,tz) > 0;
              drone_params_control_conditions_folded2_arm4(f,tx,ty,tz) > 0;
+             omega_props(1:2) < 0;
+             omega_props(3:4) > 0;
                  ];
 
 verify_u = (sum(conditions_u) == 8);

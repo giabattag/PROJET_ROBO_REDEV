@@ -1,4 +1,4 @@
-function [verify_u, verify_2f, conditions_u,conditions_2f] = verify_conditions(thrust,moments)
+function [verify_u, verify_2f, conditions_u,conditions_2f] = verify_conditions_old(thrust,moments)
 
 f = abs(thrust);
 tx = abs(moments(1));
@@ -36,9 +36,7 @@ conditions_2f = [...
              drone_params_control_conditions_folded2_arm4(f,tx,ty,tz) > 0;
                  ];
 
-verify_u = (sum(conditions_u) == 8);
-verify_2f = (sum(conditions_2f) == 8);
+verify_u = (sum(conditions_u) == 4);
+verify_2f = (sum(conditions_2f) == 4);
 
 end
-
-
