@@ -13,7 +13,7 @@ load("DroneStateBus.mat")
 
 %% Set Parameters and initial conditions
 % Drone Parameters
-drone_params=get_parameters(3);
+drone_params=get_parameters(1);
 
 % delete incorrect values
 drone_params(2).control.allocation_matrix = eye(4); % the allocation matrix is valid ONLY for the example

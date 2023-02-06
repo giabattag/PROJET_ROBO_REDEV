@@ -77,13 +77,16 @@ M4f = ...
 drone_params.control.allocation_matrix_u = Mu;
 drone_params.control.allocation_matrix_2f = M2f;
 drone_params.control.allocation_matrix_4f = M4f;
-drone_params.control.allocation_matrix = drone_params.control.allocation_matrix_u;
+drone_params.control.allocation_matrix = zeros(4,4,3);
+drone_params.control.allocation_matrix(:,:,1) = drone_params.control.allocation_matrix_u;
+drone_params.control.allocation_matrix(:,:,2) = drone_params.control.allocation_matrix_2f;
+drone_params.control.allocation_matrix(:,:,3) = drone_params.control.allocation_matrix_4f;
 
 drone_params.control.state_enum.unfolded = 0; 
 drone_params.control.state_enum.folded2 = 1;
 drone_params.control.state_enum.folded4 = 2; 
 
-drone_params.control.state = drone_params.control.state_enum.unfolded;
+% drone_params.control.state = drone_params.control.state_enum.unfolded;
 
 drone_params.control.position.kp = 2;
 drone_params.control.position.kd = 1.5;

@@ -1,4 +1,4 @@
-function [out] = setDefaultDroneParams(nDrones)
+function [out] = get_parameters(nDrones)
 %setDefaultDroneParams sets default drone parameters for nDrones
 %   Values are roughly equivalent to a typical 1kg Quadrotor, such as used
 %   in the paper Six D, Briot S, Erskine J, and Chriette A. "Identification
@@ -72,35 +72,21 @@ M4f = ...
     [0      0       0       0;
      px*kt     -px*kt     px*kt    -px*kt;
      -py*kt    py*kt      py*kt    -py*kt;
-      -pz     -pz      pz     pz];
+      -pz*kt     -pz*kt      pz*kt     pz*kt];
 
 drone_params.control.allocation_matrix_u = Mu;
 drone_params.control.allocation_matrix_2f = M2f;
 drone_params.control.allocation_matrix_4f = M4f;
-drone_params.control.allocation_matrix = drone_params.control.allocation_matrix_u;
+drone_params.control.allocation_matrix
+drone_params.control.allocation_matrix(:,:,1) = drone_params.control.allocation_matrix_u;
+drone_params.control.allocation_matrix(:,:,2) = drone_params.control.allocation_matrix_2f;
+drone_params.control.allocation_matrix(:,:,3) = drone_params.control.allocation_matrix_4f;
 
 drone_params.control.state_enum.unfolded = 0; 
 drone_params.control.state_enum.folded2 = 1;
 drone_params.control.state_enum.folded4 = 2; 
 
-drone_params.control.state = drone_params.control.state_enum.unfolded;
-
-drone_params.control.condition.unfolded.arm1 = ...
-    @(f,tx,ty,tz) 0.0143826923076923*f - 0.0421082840521321*tx - 0.0252153420017981*ty - 1.30385165048108*tz;
-drone_params.control.condition.unfolded.arm2 = ...
-    @(f,tx,ty,tz) 0.0143826923076923*f - 0.0421082840521321*tx + 0.0252153420017981*ty + 1.30385165048108*tz;
-drone_params.control.condition.unfolded.arm3 = ...
-    @(f,tx,ty,tz) 0.0143826923076923*f + 0.0421082840521321*tx + 0.0252153420017981*ty - 1.30385165048108*tz;
-drone_params.control.condition.unfolded.arm4 = ...
-    @(f,tx,ty,tz) 0.0143826923076923*f + 0.0421082840521321*tx - 0.0252153420017981*ty + 1.30385165048108*tz;
-
-drone_params.control.condition.folded2.arm1 = ...
-    @(f,tx,ty,tz) [f tx ty tz]*[0.0368826923076923; 0.0800735223916017; 0.0225016103144387; 0.00588074286911401];
-drone_params.control.condition.folded2.arm1 = ...
-    @(f,tx,ty,tz) [f tx ty tz]*[0.0237363521374971];
-
-drone_params.control.condition.folded2.arm3 = ...
-    @(f,tx,ty,tz) [f tx ty tz]*[0.0368826923076923; -0.0800735223916017; -0.0225016103144387; 0.00588074286911401];
+% drone_params.control.state = drone_params.control.state_enum.unfolded;
 
 drone_params.control.position.kp = 2;
 drone_params.control.position.kd = 1.5;
