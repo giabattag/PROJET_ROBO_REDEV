@@ -43,7 +43,7 @@ l = drone_params.mechanical.l;
 larm = l*sind(45)*0.80;
 drone_params.mechanical.THT = 0.20717058;
 THT = drone_params.mechanical.THT;
-% drone_params.control.allocation_matrix = ...
+% Mu = ...
 %     [kt,    kt,     kt,     kt;
 %    -l*kt,   l*kt,   0,      0;
 %     0,      0,      l*kt,   -l*kt;
