@@ -35,7 +35,7 @@ function [thrust, moments] = droneControlSMC(u1, s, omega, control_type_param, d
 % Fresk E, and Nikolakopoulos G. "Full Quaternion Based Attitude Control 
 % for a Quadrotor", European Control Conference, 2013.
 
-m = drone_params(DroneID).mechanical.m;
+% m = drone_params(DroneID).mechanical.m;
 % kp_attitude = drone_params(DroneID).control.attitude.kp;
 % kd_attitude = drone_params(DroneID).control.attitude.kd;
 I = drone_params(DroneID).mechanical.I;

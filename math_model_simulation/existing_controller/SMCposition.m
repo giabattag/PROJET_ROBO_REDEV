@@ -1,7 +1,6 @@
 function [u1, angc] = SMCposition(u,p,v,q,drone_params, DroneID,g)
 
 % position control
-% VALIDATED
 
 xdes   = u(1);
 dxdes  = 0;
