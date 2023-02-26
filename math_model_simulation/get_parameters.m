@@ -83,6 +83,32 @@ drone_params.control.allocation_matrix = drone_params.control.allocation_matrix_
 % drone_params.control.allocation_matrix(:,:,2) = drone_params.control.allocation_matrix_2f;
 % drone_params.control.allocation_matrix(:,:,3) = drone_params.control.allocation_matrix_4f;
 
+Pu = ...
+    [kt     kt      kt      kt;
+     -kt/2      kt/2     -kt/2       kt/2;
+     kt/2      -kt/2     -kt/2       kt/2;
+     kd     kd     -kd      -kd];
+% P2f = ...
+%     [kt         0           kt         0;
+%      -kt/2      px*kt/l     kt/2       -px*kt/l;
+%      -kt/2      -py*kt/l    kt/2       py*kt/l;
+%      -kd        pz     -kd     pz];
+P2f = ...
+     [0      0       kt       kt;
+      px*kt/l     -px*kt/l     -kt/2    kt/2;
+      -py*kt/l    py*kt/l      -kt/2    kt/2;
+       pz*kt     pz*kt      -kd     -kd];
+
+P4f = ...
+    [0      0       0       0;
+     px*kt/l     -px*kt/l     px*kt/l    -px*kt/l;
+     -py*kt/l    py*kt/l     py*kt/l    -py*kt/l;
+      -pz*kt     -pz*kt      pz*kt     pz*kt];
+
+drone_params.control.ss_matrix_u = Pu;
+drone_params.control.ss_matrix_2f = P2f;
+drone_params.control.ss_matrix_4f = P4f;
+
 drone_params.control.state_enum.unfolded = 0; 
 drone_params.control.state_enum.folded2 = 1;
 drone_params.control.state_enum.folded4 = 2; 

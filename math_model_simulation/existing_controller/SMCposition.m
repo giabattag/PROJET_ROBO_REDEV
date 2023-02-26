@@ -30,7 +30,7 @@ ddxc = ddxdes + Kdx*(dxdes - dx) + Kpx*(xdes - x);
 ddyc = ddydes + Kdy*(dydes - dy) + Kpy*(ydes - y);
 ddzc = ddzdes + Kdz*(dzdes - dz) + Kpz*(zdes - z);
 
-t = [ddxc;ddyc;m*(ddzc+g)];
+t = [m*ddxc;m*ddyc;m*(ddzc+g)];
 
 phic = (1/g)*(ddxc*sin(psides) - ddyc*cos(psides));
 thtc = (1/g)*(ddxc*cos(psides) + ddyc*sin(psides));
@@ -40,6 +40,7 @@ psic = psides;
 %           cos(tht)*sin(psi)+cos(psi)*sin(phi)*sin(tht)  cos(phi)*cos(psi) sin(psi)*sin(tht)-cos(psi)*cos(tht)*sin(phi);
 %                                     -cos(phi)*sin(tht)           sin(phi)                           cos(phi)*cos(tht)];
 u1 = dot(t, R*[0; 0; 1]);
+% u1 = dot(t, [0; 0; 1]);
 
 angc = [phic; thtc; psic];
 
