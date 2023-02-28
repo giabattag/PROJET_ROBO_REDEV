@@ -31,6 +31,7 @@ ddyc = ddydes + Kdy*(dydes - dy) + Kpy*(ydes - y);
 ddzc = ddzdes + Kdz*(dzdes - dz) + Kpz*(zdes - z);
 
 t = [m*ddxc;m*ddyc;m*(ddzc+g)];
+% ad = [ddxc;ddyc;ddzc+g];
 
 phic = (1/g)*(ddxc*sin(psides) - ddyc*cos(psides));
 thtc = (1/g)*(ddxc*cos(psides) + ddyc*sin(psides));
@@ -42,5 +43,50 @@ psic = psides;
 u1 = dot(t, R*[0; 0; 1]);
 % u1 = dot(t, [0; 0; 1]);
 
-angc = [phic; thtc; psic];
+% f = saturateThrust(ad,drone_params(DroneID).control.limits.thrust.max, m, g);
+% u1 = norm(f);
+% zd = f/u1;
+% u1 = u1 * zd' * R(:,3);
 
+angc = [phic; thtc; psic];
+% angc = angleCommand(zdes, psides);
+% 
+% function thrust_vector = saturateThrust(ad, fmax, m, g)
+% %% saturateThrust
+% % fmax^2 = m(g^2 + a^2) - 2m^2(g*a)*cos(th+pi/2)
+% 
+% if norm(m*(ad + [0;0;g])) > fmax
+%   % do thrust saturation
+%   th = atan2(sqrt(ad(1)^2 + ad(2)^2), ad(3));
+%   b = -2*m^2*g*cos(th + pi/2);
+%   c = (m*g)^2 - (fmax)^2;
+%   amax = (-b + sqrt(b*b - 4*c*m^2))/(2*m^2);
+%   factor = amax/norm(ad);
+%   thrust_vector = m*(factor*ad + [0;0;g]);
+% else
+%   thrust_vector = m*(ad + [0;0;g]);
+% end
+% 
+% if thrust_vector(3) < m*g/3
+%   % do downward thrust saturation
+% end
+% end
+% 
+% function angc = angleCommand(zd,yd)
+% % point the quadrotor axis from currently at zc towards desrired zd
+% % K frame is flat rotation about z0
+% % L frame is rotated about new y_K by theta
+% % normalize inputs
+% zd = zd/norm(zd);
+% 
+% kzd = Rzmat(yd)'*zd;
+% th_cmd = atan(kzd(1)/kzd(3));
+% 
+% lzd = Rymat(th_cmd)'*kzd;
+% phi_cmd = atan2(-lzd(2), lzd(3));
+% 
+% angc = [phi_cmd, th_cmd, yd];
+% % qcmd = eul2quat(phi_cmd,th_cmd,yd,'zyx');
+% end
+
+end

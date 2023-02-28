@@ -25,10 +25,10 @@ ism = [(Iy-Iz)/Ix*dpsi*dtht;
 k1=55;
 k2=55;
 k3=55;
-asm = ism + tuning_parameter*[dphi; dtht; dpsi];
+% asm = ism + tuning_parameter*[dphi; dtht; dpsi];
 beta = inv(I);
 
-% asm = - beta*cross(omega,I*omega) + tuning_parameter*omega;
+asm = - beta*cross(omega,I*omega) + tuning_parameter*omega;
 
 K = diag([k1, k2, k3]);
 
