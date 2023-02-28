@@ -34,6 +34,27 @@ K = diag([k1, k2, k3]);
 
 u2  = beta \ (-asm - K*sign([s1; s2; s3]));
 
+% Kpphi=625;Kdphi=50;
+% Kptht=625;Kdtht=50;
+% Kppsi=625;Kdpsi=50;
+% 
+% phic=s(1);
+% thtc=s(2);
+% psic=s(3);
+% pc=s(4);
+% qc=s(5);
+% rc=s(6);
+% ang = quat2eul(s(7:10));
+% phi = ang(1);
+% tht = ang(2);
+% psi = ang(3);
+% u2 = I*[Kpphi*(phic-phi)+Kdphi*(pc-dphi);
+%         Kptht*(thtc-tht)+Kdtht*(qc-dtht);
+%         Kppsi*(psic-psi)+Kdpsi*(rc-dpsi)];
+
+
+
+
 %     U = [u1; u2];
 
 % %     Mu =...
