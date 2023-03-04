@@ -1,0 +1,35 @@
+function op=Twisting_attitude_control(u)
+
+tuning_parameter = 100;
+I = diag([4.21e-3 3.79e-3 7.79e-3]);
+
+k11=1.5;
+k12=1.5;
+k13=1.5;
+
+Ix=I(1,1);
+Iy=I(2,2);
+Iz=I(3,3);
+
+dphi=u(1);
+dtht=u(2);
+dpsi=u(3);
+
+s1=u(4);
+s2=u(5);
+s3=u(6);
+v = [u(7); u(8); u(9)];
+
+ism = [(Iy-Iz)/Ix*dpsi*dtht;
+        (Iz-Ix)/Iy*dpsi*dphi; 
+        (Ix-Iy)/Iz*dphi*dtht];
+
+asm = ism + tuning_parameter*[dphi; dtht; dpsi];
+K1 = diag([k11, k12, k13]);
+% K2 = diag([k21, k22, k23]);
+
+beta = inv(I);
+
+op  = beta \ (-asm - K1*sqrt(abs([s1; s2; s3])).*sign([s1; s2; s3]) + v);
+end
+
