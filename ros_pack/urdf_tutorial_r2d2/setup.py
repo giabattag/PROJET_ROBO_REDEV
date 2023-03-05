@@ -27,7 +27,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'state_publisher = urdf_tutorial_r2d2.state_publisher:main'
+            'state_publisher = urdf_tutorial_r2d2.state_publisher:main',
+            'control = urdf_tutorial_r2d2.control:main'
         ],
     },
 )
