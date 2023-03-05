@@ -35,4 +35,10 @@ def generate_launch_description():
             executable='state_publisher',
             name='state_publisher',
             output='screen'),
+        Node(
+            package='urdf_tutorial_r2d2',
+            executale='control',
+            name='control',
+            output='screen'
+        ),
     ])

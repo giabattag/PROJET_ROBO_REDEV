@@ -18,13 +18,13 @@ class pub(Node):
 
 
         
-        joint_state = JointState()
+        self.joint_state = JointState()
 
             #PUBS
         self.joint_pub = self.create_publisher(JointState, 'motor_speed', qos_profile)
             
             #SUBS
-            
+        self.cmd_subs =self.create_subscription(Accel, 'cmd', self.cmd_callback, qos_profile)
             #TF
       
         # robot state
@@ -43,17 +43,12 @@ class pub(Node):
                 joint_state.header.stamp = now.to_msg()
                 joint_state.name = ["prop_1", "prop_2", "prop_3", "prop_4"]
                 #For convention even motors are negative (clockwise)
-                joint_state.position = [10.0,#self.propeller_speed.velocity[self.propeller_speed.name.index("prop_to_arm_1")],
-                                        -10.0,#self.propeller_speed.velocity[self.propeller_speed.name.index("prop_to_arm_2")],
-                                        10.0,#self.propeller_speed.velocity[self.propeller_speed.name.index("prop_to_arm_3")],
-                                        -10.0#self.propeller_speed.velocity[self.propeller_speed.name.index("prop_to_arm_4")],
-                                       ]# 0.0, 0.0, 0.0, 0.0]
 
                 # update transform
                 # (moving in a circle with radius=2)
 
                 # send the joint state and transform
-                self.joint_pub.publish(joint_state)
+                self.joint_pub.publish(self.joint_state)
 
                 # Create new robot state
                 # tilt += tinc
@@ -72,22 +67,35 @@ class pub(Node):
             pass
 
 
-    
-    
-    def proppeler_callback(self, msg):
-        self.propeller_speed = msg
+    def cmd_callback(self, msg):
+        Ki = 0.0172
+        m_arm = 0.067
+        m_body = 0.356
+        m_drone = m_body + 4*m_arm
+        g = 10
 
-def euler_to_quaternion(roll, pitch, yaw):
-    qx = sin(roll/2) * cos(pitch/2) * cos(yaw/2) - cos(roll/2) * sin(pitch/2) * sin(yaw/2)
-    qy = cos(roll/2) * sin(pitch/2) * cos(yaw/2) + sin(roll/2) * cos(pitch/2) * sin(yaw/2)
-    qz = cos(roll/2) * cos(pitch/2) * sin(yaw/2) - sin(roll/2) * sin(pitch/2) * cos(yaw/2)
-    qw = cos(roll/2) * cos(pitch/2) * cos(yaw/2) + sin(roll/2) * sin(pitch/2) * sin(yaw/2)
-    return Quaternion(x=qx, y=qy, z=qz, w=qw)
+        wi_eq = (g*m_drone/(4*Ki))
+        ar_input = np.array([msg.linear.z,
+                            msg.angular.x,
+                            msg.angular.y,
+                            msg.angular.z])
+
+        thrust_map = np.matrix([[1, 1, 1, 1],
+                                [1, -1, -1, 1],
+                                [1, 1, -1, -1],
+                                [1, -1, 1, -1]])
+        aa = np.linalg.pinv(thrust_map)@ar_input
+
+        self.joint_state.position[0] = (wi_eq*(1+aa[0,0]/5))**(1/2)
+        self.joint_state.position[1] = (wi_eq*(1+aa[0,1]/5))**(1/2)
+        self.joint_state.position[2] = (wi_eq*(1+aa[0,2]/5))**(1/2)
+        self.joint_state.position[3] = (wi_eq*(1+aa[0,3]/5))**(1/2)
+    
+
 
 
 
 def main():
-    print("AAAAAAAAAAAAAAAAAAAAAAA  ")
 
     node = pub()
 

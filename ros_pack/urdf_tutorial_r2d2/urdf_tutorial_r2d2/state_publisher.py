@@ -19,6 +19,7 @@ import time
 import math
 import numpy as np
 from geometry_msgs.msg import Quaternion, Vector3
+from scipy.spatial.transform import Rotation as R
 
 
 
@@ -49,19 +50,23 @@ def quaternion_to_euler_angle(quat):
     return X, Y, Z
 
 def rotate_wrt(quaternion_ref, vector_to_transform):
-    [rot_x, rot_y, rot_z] = quaternion_to_euler_angle(quaternion_ref)
+    # [rot_x, rot_y, rot_z] = quaternion_to_euler_angle(quaternion_ref)
     
-    cx, sx = np.cos(rot_x), np.sin(rot_x) 
-    cy, sy = np.cos(rot_y), np.sin(rot_y) 
-    cz, sz = np.cos(rot_z), np.sin(rot_z) 
+    # cx, sx = np.cos(rot_x), np.sin(rot_x) 
+    # cy, sy = np.cos(rot_y), np.sin(rot_y) 
+    # cz, sz = np.cos(rot_z), np.sin(rot_z) 
 
-    Rx = np.array([[1, 0, 0], [0, cx, -sx], [0, sx, cx]])
-    Ry = np.array([[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]])
-    Rz = np.array([[cz, -sz, 0], [sz, cz, 0], [0, 0, 1]])
+    # Rx = np.array([[1, 0, 0], [0, cx, -sx], [0, sx, cx]])
+    # Ry = np.array([[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]])
+    # Rz = np.array([[cz, -sz, 0], [sz, cz, 0], [0, 0, 1]])
 
-    R = Rx@Ry@Rz
+    r = R.from_quat([quaternion_ref.x, quaternion_ref.y, quaternion_ref.z, quaternion_ref.w])
 
-    wrt_vec = R@np.array([vector_to_transform.x, vector_to_transform.y, vector_to_transform.z])
+    # R = Rx@Ry@Rz
+
+    #MY QUESTION ABOUT MY OWN CODE --- WHY I DONT USE r (rotation matrix)
+
+    wrt_vec = np.array([vector_to_transform.x, vector_to_transform.y, vector_to_transform.z])
     return Vector3(x=wrt_vec[0], y=wrt_vec[1], z=wrt_vec[2])
 
 def quaternion_multiply(quaternion1, quaternion0):
@@ -131,11 +136,28 @@ class StatePublisher(Node):
         pose_d = PoseStamped()
         twist_d = TwistStamped()
         accel_d = AccelStamped()
+        config = '4_0'
 
         self.State_d = {
-            "p" : pose_d,
-            "t" : twist_d,
-            "a" : accel_d
+            "p"      : pose_d,
+            "t"      : twist_d,
+            "a"      : accel_d,
+            "condig" : config
+        }
+
+        self.config_drone{
+            '4_0':{
+                'I'     : np.diag([4.21e-3, 3.70e-3, 7.79e-3]),
+                'tht'   : [0., 0., 0., 0.]
+            },
+            '2_2':{
+                'I'     : np.matrix([[4.12e-3, -1.07e-3, 0.0], [-1.07e-3, 3.33e-3, 0.0], [0.0, 0.0, 5.68e-3]]),
+                'tht'   : [math.pi/2, 0., math.pi/2, 0.]
+            },
+            '0_4':{
+                'I'     : np.matrix([3.53e-3, 2.37e-3, 3.52e-3]),
+                'tht'   : [math.pi/2, math.pi/2, math.pi/2, math.pi/2]
+            },
         }
 
         print("ESTADOO")
@@ -155,7 +177,10 @@ class StatePublisher(Node):
                                         0.,#self.propeller_speed.velocity[self.propeller_speed.name.index("prop_to_arm_2")],
                                         0.,#self.propeller_speed.velocity[self.propeller_speed.name.index("prop_to_arm_3")],
                                         0.,#,#self.propeller_speed.velocity[self.propeller_speed.name.index("prop_to_arm_4")],
-                                        0.0, 0.0, 0.0, 0.0]
+                                        self.config_drone[self.State_d['config']]['tht'][0],
+                                        self.config_drone[self.State_d['config']]['tht'][1],
+                                        self.config_drone[self.State_d['config']]['tht'][2],
+                                        self.config_drone[self.State_d['config']]['tht'][3]]
 
                 # update transform
                 # (moving in a circle with radius=2)
@@ -193,7 +218,7 @@ class StatePublisher(Node):
 
                 # This will adjust as needed per iteration
                 # loop_rate.sleep()
-                self.get_logger().info("SLEEEP")
+                # self.get_logger().info("SLEEEP")
             
 
 
@@ -206,25 +231,30 @@ class StatePublisher(Node):
         body_wrent.header.frame_id = "drone"
 
         #Pass this to a config file (extract from UDRF of YAML file)
-        Kl = 0.025 #Const for motor force
-        Ki = 0.1    
-        m = 1.0 #Drone mass
+        Kl = 0.0172 #Const for motor force
+        Ki = 0.0172
+        m_arm = 0.067
+        m_body = 0.356    
+        m_body = m_body + 4*m_arm #Drone mass
         g = 10.0 # gravity
-        inverI = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-        Jr = np.diag([1, 1, 1]) #Rotor inertia
+        I_body = self.config_drone[self.State_d['config']][I]
+        inverI = np.linalg.pinv(I_body)
+        Jr = np.diag([0.0001, 0.0001, 0.0001]) #Rotor inertia
 
-        body_wrent.wrench.force.z = -m*g
+        body_wrent.wrench.force.z = -m_body*g
 
         for motor in self.propeller_speed.name:
             motor_wrent = WrenchStamped()
             motor_wrent.header.frame_id = motor
+
+            # motor_sign = -1 if motor in ['prop_2', 'prop_4'] else 1
             
             try:
 
                 #Generating linear force
                 wi = self.propeller_speed.position[self.propeller_speed.name.index(motor)]
-                motor_wrent.wrench.force.z = (wi**2)*Kl
-                motor_wrent.wrench.torque.z = np.sign(wi)*(wi**2)*Ki
+                motor_wrent.wrench.force.z = np.sign(wi)*(wi**2)*Kl
+                motor_wrent.wrench.torque.z = motor_sign*np.sign(wi)*(wi**2)*Ki
 
 
                 motor_to_body_wrent = Wrench()
@@ -232,7 +262,7 @@ class StatePublisher(Node):
                 
                 motor_to_body_wrent.force = rotate_wrt(motor_to_drone.transform.rotation, motor_wrent.wrench.force)
                 motor_to_body_wrent.torque = rotate_wrt(motor_to_drone.transform.rotation, motor_wrent.wrench.torque)
-                self.get_logger().warning("Transform  {0}".format(motor_to_drone))
+                # self.get_logger().warning("Transform  {0}".format(motor_to_drone))
 
 
 
@@ -241,16 +271,16 @@ class StatePublisher(Node):
                 body_wrent.wrench.force.z = body_wrent.wrench.force.z + motor_to_body_wrent.force.z
 
                 #GYROSCOPE EFFECT
-                gyro =  np.cross(np.array([self.State_d['t'].twist.angular.x, self.State_d['t'].twist.angular.y, self.State_d['t'].twist.angular.z])
-                                ,Jr@np.array([0, 0, wi]))
+                # gyro =  np.cross(np.array([self.State_d['t'].twist.angular.x, self.State_d['t'].twist.angular.y, self.State_d['t'].twist.angular.z])
+                #                 ,Jr@np.array([0, 0, wi]))
                 # self.get_logger().warning("GYRO {0}".format(gyro))
                 force_moment = np.cross(np.array([motor_to_drone.transform.translation.x, motor_to_drone.transform.translation.y, motor_to_drone.transform.translation.z]),
                                         np.array([motor_to_body_wrent.force.x, motor_to_body_wrent.force.y, motor_to_body_wrent.force.z]))
 
 
-                body_wrent.wrench.torque.x = body_wrent.wrench.torque.x + motor_to_body_wrent.torque.x + force_moment[0] + gyro[0] #motor_to_body_wrent.force.y*motor_to_drone.transform.translation.z - motor_to_body_wrent.force.z*motor_to_drone.transform.translation.y + gyro[0]
-                body_wrent.wrench.torque.y = body_wrent.wrench.torque.y + motor_to_body_wrent.torque.y + force_moment[1] + gyro[1] #motor_to_body_wrent.force.z*motor_to_drone.transform.translation.x - motor_to_body_wrent.force.x*motor_to_drone.transform.translation.z + gyro[1]
-                body_wrent.wrench.torque.z = body_wrent.wrench.torque.z + motor_to_body_wrent.torque.z + force_moment[2] + gyro[2] #motor_to_body_wrent.force.x*motor_to_drone.transform.translation.y - motor_to_body_wrent.force.y*motor_to_drone.transform.translation.x + gyro[2]
+                body_wrent.wrench.torque.x = body_wrent.wrench.torque.x + motor_to_body_wrent.torque.x + force_moment[0] #+ gyro[0] #motor_to_body_wrent.force.y*motor_to_drone.transform.translation.z - motor_to_body_wrent.force.z*motor_to_drone.transform.translation.y + gyro[0]
+                body_wrent.wrench.torque.y = body_wrent.wrench.torque.y + motor_to_body_wrent.torque.y + force_moment[1] #+ gyro[1] #motor_to_body_wrent.force.z*motor_to_drone.transform.translation.x - motor_to_body_wrent.force.x*motor_to_drone.transform.translation.z + gyro[1]
+                body_wrent.wrench.torque.z = body_wrent.wrench.torque.z + motor_to_body_wrent.torque.z + force_moment[2] #+ gyro[2] #motor_to_body_wrent.force.x*motor_to_drone.transform.translation.y - motor_to_body_wrent.force.y*motor_to_drone.transform.translation.x + gyro[2]
 
 
 
@@ -266,13 +296,13 @@ class StatePublisher(Node):
 
 
 
-        self.State_d["a"].accel.linear.z = 1/m*(body_wrent.wrench.force.z)
+        self.State_d["a"].accel.linear.z = 1/m_body*(body_wrent.wrench.force.z)
         self.State_d["t"].twist.linear.z += 1/self.rate*(self.State_d["a"].accel.linear.z)
 
-        self.State_d["a"].accel.linear.y = 1/m*(body_wrent.wrench.force.y)
+        self.State_d["a"].accel.linear.y = 1/m_body*(body_wrent.wrench.force.y)
         self.State_d["t"].twist.linear.y += 1/self.rate*(self.State_d["a"].accel.linear.y)
         
-        self.State_d["a"].accel.linear.x = 1/m*(body_wrent.wrench.force.x)
+        self.State_d["a"].accel.linear.x = 1/m_body*(body_wrent.wrench.force.x)
         self.State_d["t"].twist.linear.x += 1/self.rate*(self.State_d["a"].accel.linear.x)
 
         self.get_logger().info("Lin - Aceel: {0} {1} {2}".format(self.State_d["a"].accel.linear.x, self.State_d["a"].accel.linear.y, self.State_d["a"].accel.linear.z))
@@ -280,7 +310,8 @@ class StatePublisher(Node):
 
 
         torq = np.array([body_wrent.wrench.torque.x, body_wrent.wrench.torque.y, body_wrent.wrench.torque.z])
-        ac = inverI@(torq)
+        ang_tw = np.array([self.State_d['t'].twist.angular.x, self.State_d['t'].twist.angular.y, self.State_d['t'].twist.angular.z])
+        ac = np.clip(inverI@(torq), -0.3, 0.3) - np.clip(np.around(inverI@np.cross(ang_tw, I_body@ang_tw), decimals=5, -10, 10))
         
         self.State_d["a"].accel.angular.z = ac[2]
         self.State_d["t"].twist.angular.z += 1/self.rate*(self.State_d["a"].accel.angular.z)
@@ -305,6 +336,8 @@ class StatePublisher(Node):
             self.State_d["p"].pose.position.x += 1/self.rate*(drone_velocity_world.x)     
             self.State_d["p"].pose.position.y += 1/self.rate*(drone_velocity_world.y)
             self.State_d["p"].pose.position.z += 1/self.rate*(drone_velocity_world.z)
+            if self.State_d["p"].pose.position.z <= 0.0:
+                self.State_d["p"].pose.position.z = 0.0
 
             self.State_d['p'].pose.orientation = quaternion_multiply(drone_rottationquat_world, self.State_d['p'].pose.orientation) 
 
@@ -325,7 +358,6 @@ class StatePublisher(Node):
 
 
 def main():
-    print("AAAAAAAAAAAAAAAAAAAAAAA  ")
 
     node = StatePublisher()
 
