@@ -35,15 +35,17 @@ function [thrust, moments] = droneControl(u, p, v, q, omega, control_type_param,
 % Fresk E, and Nikolakopoulos G. "Full Quaternion Based Attitude Control 
 % for a Quadrotor", European Control Conference, 2013.
 
+global kp_position_pid kd_position_pid kp_attitude_pid kd_attitude_pid
+
 m = drone_params(DroneID).mechanical.m;
-kp_attitude = drone_params(DroneID).control.attitude.kp;
-kd_attitude = drone_params(DroneID).control.attitude.kd;
+kp_attitude = kp_attitude_pid;
+kd_attitude = kd_attitude_pid;
 
 if control_type_param == 1
   % do position control
   % VALIDATED
-  kp = drone_params(DroneID).control.position.kp;
-  kd = drone_params(DroneID).control.position.kd;
+  kp = kp_position_pid;
+  kd = kd_position_pid;
   
   pd = u(1:3);
   yd = u(4);

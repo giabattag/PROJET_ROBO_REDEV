@@ -1,7 +1,9 @@
-function op=Twisting_position_control(u)
+function op=Twisting_position_control(u,m,g)
 
-m = 0.624;
-g = 9.81;
+global kp_z_stw kd_z_stw kp_x_stw kd_x_stw kp_y_stw kd_y_stw
+
+% m = 0.624;
+% g = 9.81;
 
 xdes   = u(1);
 dxdes  = u(2);
@@ -24,9 +26,9 @@ phi    = u(17);
 tht    = u(18);
 psi    = u(19);
 
-Kpz=4;Kdz=4;
-Kpx=20;Kdx=30;
-Kpy=10;Kdy=10;
+Kpz=kp_z_stw;Kdz=kd_z_stw;
+Kpx=kp_x_stw;Kdx=kd_x_stw;
+Kpy=kp_y_stw;Kdy=kd_y_stw;
 ddxc = ddxdes + Kdx*(dxdes - dx) + Kpx*(xdes - x);
 ddyc = ddydes + Kdy*(dydes - dy) + Kpy*(ydes - y);
 ddzc = ddzdes + Kdz*(dzdes - dz) + Kpz*(zdes - z);

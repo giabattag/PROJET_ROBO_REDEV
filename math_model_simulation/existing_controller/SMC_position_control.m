@@ -1,7 +1,9 @@
-function op=SMC_position_control(u)
+function op=SMC_position_control(u,m,g)
 
-m = 0.624;
-g = 9.81;
+global kp_z_smc kd_z_smc kp_x_smc kd_x_smc kp_y_smc kd_y_smc
+
+% m = 0.624;
+% g = 9.81;
 
 xdes   = u(1);
 dxdes  = u(2);
@@ -24,9 +26,9 @@ phi    = u(17);
 tht    = u(18);
 psi    = u(19);
 
-Kpz=4;Kdz=4;
-Kpx=20;Kdx=30;
-Kpy=10;Kdy=10;
+Kpz=kp_z_smc;Kdz=kd_z_smc;
+Kpx=kp_x_smc;Kdx=kd_x_smc;
+Kpy=kp_y_smc;Kdy=kd_y_smc;
 ddxc = ddxdes + Kdx*(dxdes - dx) + Kpx*(xdes - x);
 ddyc = ddydes + Kdy*(dydes - dy) + Kpy*(ydes - y);
 ddzc = ddzdes + Kdz*(dzdes - dz) + Kpz*(zdes - z);

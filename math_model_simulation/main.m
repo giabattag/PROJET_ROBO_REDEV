@@ -25,6 +25,9 @@ drone_params=get_parameters(1);
 % drone_params(3).mechanical.l = 0.5;
 % drone_params(3).mechanical.I = 100*drone_params(1).mechanical.I;
 
+% control parameters
+control_params;
+
 % define gravity
 g = 9.81;
 
