@@ -2,23 +2,26 @@ from math import sin, cos, pi
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile
-from geometry_msgs.msg import Quaternion, TwistStamped, PoseStamped, AccelStamped, WrenchStamped, Vector3
+from geometry_msgs.msg import Quaternion, TwistStamped, PoseStamped, AccelStamped, WrenchStamped, Vector3, Accel
 from sensor_msgs.msg import JointState
 from tf2_ros import TransformBroadcaster, TransformStamped, TransformListener, Buffer
+import numpy as np
 
-class pub(Node):
+class control(Node):
 
     def __init__(self):
 
         #Initializing ROS
         rclpy.init()
-        super().__init__('pub')
+        super().__init__('control')
 
         qos_profile = QoSProfile(depth=10)
 
 
         
         self.joint_state = JointState()
+        self.joint_state.name = ["prop_1", "prop_2", "prop_3", "prop_4"]
+        self.joint_state.position = [0., 0., 0., 0.]
 
             #PUBS
         self.joint_pub = self.create_publisher(JointState, 'motor_speed', qos_profile)
@@ -40,8 +43,7 @@ class pub(Node):
 
                 # update joint_state
                 now = self.get_clock().now()
-                joint_state.header.stamp = now.to_msg()
-                joint_state.name = ["prop_1", "prop_2", "prop_3", "prop_4"]
+                self.joint_state.header.stamp = now.to_msg()
                 #For convention even motors are negative (clockwise)
 
                 # update transform
@@ -61,7 +63,7 @@ class pub(Node):
                 # angle += degree/4
 
                 # This will adjust as needed per iteration
-                loop_rate.sleep()
+                loop_rate.spin()
 
         except KeyboardInterrupt:
             pass
@@ -97,7 +99,8 @@ class pub(Node):
 
 def main():
 
-    node = pub()
+    node = control()
+    # rclpy.spin(node)
 
 if __name__ == '__main__':
     main()

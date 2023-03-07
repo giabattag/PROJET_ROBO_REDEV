@@ -23,7 +23,7 @@
     <visual name="drone_visual">
       <origin xyz="${xd} ${yd} 0" rpy="1.57079 0 0"/>
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_Body.STL"
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/Gazebo_Base_Body.STL"
               scale="0.001 0.001 0.001" />
       </geometry>
      <material name="blue"/>
@@ -32,7 +32,7 @@
     <collision>
       <origin xyz="${xd} ${yd} 0" rpy="1.57079 0 0"/>
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_Body.STL"
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/Gazebo_Base_Body.STL"
               scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
@@ -43,7 +43,7 @@
 
     <visual name="arm_1_link_visual">
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
       <origin xyz="0 ${0} 0"/>
@@ -51,7 +51,7 @@
 
     <collision>
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
       <origin xyz="0 ${0} 0"/>
@@ -63,7 +63,7 @@
 
     <visual name="arm_2_link_visual">
       <geometry>
-      <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
+      <mesh filename="package://urdf_tutorial_r2d2/meshes/Gazebo_Base_arm.STL"
             scale="0.001 0.001 0.001"/>
       </geometry>
       <origin xyz="0 ${-arm_base} 0"/>
@@ -72,7 +72,7 @@
     <collision>
       <origin xyz="0 ${-arm_base} 0"/>
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
 
@@ -83,7 +83,7 @@
 
     <visual name="arm_3_link_visual">
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
       <origin xyz="0 ${0} 0"/>
@@ -91,7 +91,7 @@
 
     <collision>
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
       <origin xyz="0 ${0} 0"/>
@@ -103,7 +103,7 @@
 
     <visual name="arm_4_link_visual">
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
       <origin xyz="0 ${-arm_base} 0"/>
@@ -111,7 +111,7 @@
 
     <collision>
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/Gazebo_Base_arm.STL"
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/Gazebo_Base_arm.STL"
               scale="0.001 0.001 0.001"/>
       </geometry>
       <origin xyz="0 ${-arm_base} 0"/>
@@ -158,7 +158,7 @@
   <link name="prop_1">
     <visual name="prop_1_link_visual">
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/1345_prop_ccw.STL"/>
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/1345_prop_ccw.STL"/>
       </geometry>
       <origin  rpy="0 0 0" xyz="-0.03 -0.17 0"/>
     </visual> 
@@ -174,7 +174,7 @@
   <link name="prop_2">
     <visual name="prop_2_link_visual">
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/1345_prop_cw.STL"/>
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/1345_prop_cw.STL"/>
       </geometry>
       <origin  rpy="0 0 0" xyz="-0.03 -0.17 0"/>
     </visual>
@@ -190,7 +190,7 @@
   <link name="prop_3">
     <visual name="prop_3_link_visual">
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/1345_prop_ccw.STL"/>
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/1345_prop_ccw.STL"/>
       </geometry>
       <origin  rpy="0 0 0" xyz="-0.03 -0.17 0"/>
     </visual>
@@ -206,7 +206,7 @@
   <link name="prop_4">
     <visual name="prop_4_link_visual">
       <geometry>
-        <mesh filename="package://urdf_tutorial/meshes/1345_prop_cw.STL"/>
+        <mesh filename="package://urdf_tutorial_r2d2/meshes/1345_prop_cw.STL"/>
       </geometry>
       <origin  rpy="0 0 0" xyz="-0.03 -0.17 0"/>
     </visual>

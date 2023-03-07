@@ -142,10 +142,10 @@ class StatePublisher(Node):
             "p"      : pose_d,
             "t"      : twist_d,
             "a"      : accel_d,
-            "condig" : config
+            "config" : config
         }
 
-        self.config_drone{
+        self.config_drone = {
             '4_0':{
                 'I'     : np.diag([4.21e-3, 3.70e-3, 7.79e-3]),
                 'tht'   : [0., 0., 0., 0.]
@@ -237,7 +237,7 @@ class StatePublisher(Node):
         m_body = 0.356    
         m_body = m_body + 4*m_arm #Drone mass
         g = 10.0 # gravity
-        I_body = self.config_drone[self.State_d['config']][I]
+        I_body = self.config_drone[self.State_d['config']]['I']
         inverI = np.linalg.pinv(I_body)
         Jr = np.diag([0.0001, 0.0001, 0.0001]) #Rotor inertia
 
@@ -311,7 +311,7 @@ class StatePublisher(Node):
 
         torq = np.array([body_wrent.wrench.torque.x, body_wrent.wrench.torque.y, body_wrent.wrench.torque.z])
         ang_tw = np.array([self.State_d['t'].twist.angular.x, self.State_d['t'].twist.angular.y, self.State_d['t'].twist.angular.z])
-        ac = np.clip(inverI@(torq), -0.3, 0.3) - np.clip(np.around(inverI@np.cross(ang_tw, I_body@ang_tw), decimals=5, -10, 10))
+        ac = np.clip(inverI@(torq), -0.3, 0.3) - np.clip(np.around(inverI@np.cross(ang_tw, I_body@ang_tw), decimals=5), -10, 10)
         
         self.State_d["a"].accel.angular.z = ac[2]
         self.State_d["t"].twist.angular.z += 1/self.rate*(self.State_d["a"].accel.angular.z)
