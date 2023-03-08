@@ -40,7 +40,7 @@ omega0 = [[0,0,0]',[0,0,0]',[0,0,0]'];
 
 %% Simulink Parameters
 dt = 0.005;
-tsim = 20;
+tsim = 10;
 
 gust_force = [0;0;0]; % force in N in world frame
 gust_start = 8; % start time of wind gust
