@@ -247,7 +247,7 @@ class StatePublisher(Node):
             motor_wrent = WrenchStamped()
             motor_wrent.header.frame_id = motor
 
-            # motor_sign = -1 if motor in ['prop_2', 'prop_4'] else 1
+            motor_sign = -1 if motor in ['prop_2', 'prop_4'] else 1
             
             try:
 
@@ -336,8 +336,9 @@ class StatePublisher(Node):
             self.State_d["p"].pose.position.x += 1/self.rate*(drone_velocity_world.x)     
             self.State_d["p"].pose.position.y += 1/self.rate*(drone_velocity_world.y)
             self.State_d["p"].pose.position.z += 1/self.rate*(drone_velocity_world.z)
-            if self.State_d["p"].pose.position.z <= 0.0:
+            if self.State_d["p"].pose.position.z < 0.0:
                 self.State_d["p"].pose.position.z = 0.0
+                self.State_d["t"].twist.linear.z = 0.0
 
             self.State_d['p'].pose.orientation = quaternion_multiply(drone_rottationquat_world, self.State_d['p'].pose.orientation) 
 

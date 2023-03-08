@@ -36,7 +36,7 @@ class control(Node):
         loop_rate = self.create_rate(self.rate)
 
 
-        
+       
         try:
             while rclpy.ok():
                 rclpy.spin_once(self)
@@ -63,7 +63,7 @@ class control(Node):
                 # angle += degree/4
 
                 # This will adjust as needed per iteration
-                loop_rate.spin()
+  
 
         except KeyboardInterrupt:
             pass
@@ -75,19 +75,19 @@ class control(Node):
         m_body = 0.356
         m_drone = m_body + 4*m_arm
         g = 10
-
+        print("HERE")
         wi_eq = (g*m_drone/(4*Ki))
         ar_input = np.array([msg.linear.z,
                             msg.angular.x,
                             msg.angular.y,
                             msg.angular.z])
-
+        print("HERE 2")
         thrust_map = np.matrix([[1, 1, 1, 1],
                                 [1, -1, -1, 1],
                                 [1, 1, -1, -1],
                                 [1, -1, 1, -1]])
         aa = np.linalg.pinv(thrust_map)@ar_input
-
+        print("HERE 3")
         self.joint_state.position[0] = (wi_eq*(1+aa[0,0]/5))**(1/2)
         self.joint_state.position[1] = (wi_eq*(1+aa[0,1]/5))**(1/2)
         self.joint_state.position[2] = (wi_eq*(1+aa[0,2]/5))**(1/2)
