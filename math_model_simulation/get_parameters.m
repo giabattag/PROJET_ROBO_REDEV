@@ -13,6 +13,11 @@ drone_params.mechanical.m_body = 0.356;
 drone_params.mechanical.m_payload = 0;
 drone_params.mechanical.m = drone_params.mechanical.m_body+4*drone_params.mechanical.m_arm;
 
+drone_params.mechanical.Thetau = [0, 0, 0, 0];
+drone_params.mechanical.Theta2f = [pi/2, pi/2, 0, 0];
+drone_params.mechanical.Theta4f = [pi/2, pi/2, pi/2, pi/2];
+
+
 drone_params.mechanical.Iu = diag([4.21e-3 3.79e-3 7.79e-3]);
 drone_params.mechanical.I2f = [4.12   -1.07   0;
                                -1.07  3.33    0;
@@ -40,7 +45,7 @@ kt = drone_params.motors.kt_prop;
 kd = drone_params.motors.kd_prop;
 kd_rev = drone_params.motors.kd_prop_rev;
 l = drone_params.mechanical.l;
-larm = l*sind(45)*0.80;
+larm = 0.09 %m %l*sind(45+11.9)*0.80;
 drone_params.mechanical.THT = 0.20717058;
 THT = drone_params.mechanical.THT;
 % Mu = ...
@@ -130,6 +135,69 @@ drone_params.sensor.position_noise = 0.05;
 drone_params.sensor.velocity_noise = 0.1;
 drone_params.sensor.attitude_noise = 0.05;
 drone_params.sensor.gyroscope_noise = 0.1;
+
+%transformations
+%CREATE VARIABLES TO PARAMETRISE THIS TO A CUSTOM FRAME
+%IMPORT MY NONLINEAR ANGLE CODE TO DO IT
+drone_params.transforms.body_hinge_p = 1e-2*[  -4.5, -7.1, -0.2; %Hinge 1
+                                              4.5, -7.1, -0.2; %Hinge 2
+                                              4.5,  7.1, -0.2; %Hinge 3
+                                             -4.5,  7.1, -0.2;]; %hinge 4 %m
+                                    
+drone_params.transforms.hinge_motor_p = [larm 0 0]; %m   %We consider a simplification that the thrust wont have a bias in Z axis to make it easier to understand the behavior
+%we also consider that Z axis of the Hinge respect DH convention the
+%positive theta Z is in folding direction and the X configuration is 0
+
+
+drone_params.transforms.body_hinge_r_1 = Rzmat((-pi+0.577)); %([-pi/2,  0, (-pi+0.577); %Hinge 1
+                                       %  -pi/2,  0,  -0.577; %Hinge 2
+                                       %  -pi/2,  0,  0.577; %Hinge 3
+                                       %  -pi/2,  0,  pi-0.577;]); %hinge 4 %rad
+                                               
+
+drone_params.mechanical.Theta = [0, 0, 0, 0];                                               
+drone_params.transforms.hinge_motor_r = ([ pi/2,  0, drone_params.mechanical.Theta(1);
+                                           pi/2,  0, drone_params.mechanical.Theta(2);
+                                           pi/2,  0, drone_params.mechanical.Theta(3);
+                                           pi/2,  0, drone_params.mechanical.Theta(4)]); %rad
+                                       
+
+% syms th1 th2 th3 th4
+% 
+% % modified DH parameter table
+% % thetaj = sym([th1,th2,th3,th4]);
+% % dj = [0,L1,L2,L3];
+% % rj = sym([0,0,0,0]);
+% % alphaj = sym([0,0,0,0]);
+% 
+% % transformation matrix
+% % TbTp1 = DHSym(alphaj,dj,thetaj,rj);
+% d1 = sqrt(drone_params.transforms.body_hinge_p(1,1)^2 + drone_params.transforms.body_hinge_p(1,2)^2);
+% TbTp1 = DHSym(sym([drone_params.transforms.body_hinge_r(1,1),drone_params.transforms.hinge_motor_r(1,1)]),...
+%                 sym([d1, drone_params.transforms.hinge_motor_p(1)]),...
+%                 sym([drone_params.transforms.body_hinge_r(1,3) , th1]),...
+%                 sym([0, 0]));
+%             
+% d2 = sqrt(drone_params.transforms.body_hinge_p(2,1)^2 + drone_params.transforms.body_hinge_p(2,2)^2);
+% TbTp2 = DHSym([drone_params.transforms.body_hinge_r(2,1),drone_params.transforms.hinge_motor_r(2,1)],...
+%                 [d2, drone_params.transforms.hinge_motor_p(1)],...
+%                 [drone_params.transforms.body_hinge_r(2,3) , th2],...
+%                 [0 0]);
+% 
+%             
+% d3 = sqrt(drone_params.transforms.body_hinge_p(3,1)^2 + drone_params.transforms.body_hinge_p(3,2)^2);
+% TbTp3 = DHSym([drone_params.transforms.body_hinge_r(3,1),drone_params.transforms.hinge_motor_r(3,1)],...
+%                 [d3, drone_params.transforms.hinge_motor_p(1)],...
+%                 [drone_params.transforms.body_hinge_r(3,3) , th3],...
+%                 [0 0]);
+%             
+% d4 = sqrt(drone_params.transforms.body_hinge_p(4,1)^2 + drone_params.transforms.body_hinge_p(4,2)^2);
+% TbTp4 = DHSym([drone_params.transforms.body_hinge_r(4,1),drone_params.transforms.hinge_motor_r(4,1)],...
+%                 [d4, drone_params.transforms.hinge_motor_p(1)],...
+%                 [drone_params.transforms.body_hinge_r(4,3) , th1],...
+%                 [0 0]);
+% 
+%%
 
 out = [];
 for i = 1:nDrones
