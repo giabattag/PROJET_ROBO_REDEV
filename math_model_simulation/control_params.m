@@ -41,11 +41,13 @@ kd_x_stw = 30;
 kp_y_stw = 10;
 kd_y_stw = 10;
 
-k11_attitude_stw = 1.5;
-k12_attitude_stw = 1.5;
-k13_attitude_stw = 1.5;
-k21_attitude_stw = 1.1;
-k22_attitude_stw = 1.1;
-k23_attitude_stw = 1.1;
+
+dDeltaM = 10;
+k11_attitude_stw = 1.5*sqrt(dDeltaM);
+k12_attitude_stw = 1.5*sqrt(dDeltaM);
+k13_attitude_stw = 1.5*sqrt(dDeltaM);
+k21_attitude_stw = 1.1*dDeltaM;
+k22_attitude_stw = 1.1*dDeltaM;
+k23_attitude_stw = 1.1*dDeltaM;
 
 tuning_parameter_stw = 100;
