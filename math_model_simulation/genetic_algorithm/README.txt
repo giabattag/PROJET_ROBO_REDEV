@@ -7,3 +7,7 @@ otherwise it will always use the standart valeus of the controller
 
 3- The J funciont return the cost and the fitness of that object; You can change the calculation
 changing this function
+
+
+
+detqils - zero crossing detection changed to Adaptative and setting the  Ignored Zero Crossings diagnostic to 'none'

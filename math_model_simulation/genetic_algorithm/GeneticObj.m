@@ -5,11 +5,11 @@ properties
     cost
     
     %weight terms (manual definitions)
-    W = [100, 0.0001, 10];%[w_error, w_energy, w_overshot]
+    W = [150, 200, 0, 50];%[w_error, w_erroryaw, w_energy, w_overshot]
     %PID params
     K % [kp, kd, ki]
-    Krange = 10;
-    Pmutation = 7.5;
+    Krange = 100;
+    Pmutation = 0.1;
     
     fit %valeu that maximize to find the best fit
 end
@@ -17,11 +17,14 @@ end
 
 methods
 
-function obj = GeneticObj(K)
-    if length(K(K==0)) == 3
-        obj.K = rand(1,3).*obj.Krange;
+function obj = GeneticObj(K, randType)
+    if length(K(K~=0)) == 0
+        obj.K = rand(3,3).*obj.Krange;
     else
-        obj.K = K; 
+        obj.K = K;
+        if randType == "norm"
+            obj.K = (1+normrnd(0,obj.Pmutation)).*K;
+        end
     end
    
 end
@@ -35,9 +38,9 @@ function obj = cross_and_mutate(obj, parent1, parent2)
 
 end
 
-function obj = J(obj, erro, u, over)
-    integrate = obj.W(1).*erro.^2 + obj.W(2).*sum(u,2).^2;
-    obj.cost = trapz(integrate) + obj.W(3)*over;
+function obj = J(obj, error_p, error_yaw, command, over)
+    integrate = obj.W(1).*error_p.^2 + obj.W(2).*error_yaw + obj.W(3).*sum(command,2).^2;
+    obj.cost = trapz(integrate) + obj.W(4)*over;
 %     obj.fit = 1/(energy + 1e-9);
 
 end

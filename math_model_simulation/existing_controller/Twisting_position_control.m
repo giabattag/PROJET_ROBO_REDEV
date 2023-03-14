@@ -34,7 +34,7 @@ iy = u(24);
 iz = u(25);
 
 Kpz=kp_z_stw;Kdz=kd_z_stw;Kiz=ki_z_stw;
-Kpx=kp_x_stw;Kdx=kd_x_stw;Kix=ki_y_stw;
+Kpx=kp_x_stw;Kdx=kd_x_stw;Kix=ki_x_stw;
 Kpy=kp_y_stw;Kdy=kd_y_stw;Kiy=ki_y_stw;
 ddxc = ddxdes + Kdx*(dxdes - dx) + Kpx*(xdes - x) + Kix*(ixdes - ix);
 ddyc = ddydes + Kdy*(dydes - dy) + Kpy*(ydes - y) + Kiy*(iydes - iy);
