@@ -142,24 +142,29 @@ drone_params.sensor.gyroscope_noise = 0.1;
 drone_params.transforms.body_hinge_p = 1e-2*[  -4.5, -7.1, -0.2; %Hinge 1
                                               4.5, -7.1, -0.2; %Hinge 2
                                               4.5,  7.1, -0.2; %Hinge 3
-                                             -4.5,  7.1, -0.2;]; %hinge 4 %m
+                                             -4.5,  7.1, -0.2;].'; %hinge 4 %m
                                     
-drone_params.transforms.hinge_motor_p = [larm 0 0]; %m   %We consider a simplification that the thrust wont have a bias in Z axis to make it easier to understand the behavior
+drone_params.transforms.hinge_motor_p = [larm 0 0].'; %m   %We consider a simplification that the thrust wont have a bias in Z axis to make it easier to understand the behavior
 %we also consider that Z axis of the Hinge respect DH convention the
 %positive theta Z is in folding direction and the X configuration is 0
 
 
-drone_params.transforms.body_hinge_r_1 = Rzmat((-pi+0.577)); %([-pi/2,  0, (-pi+0.577); %Hinge 1
-                                       %  -pi/2,  0,  -0.577; %Hinge 2
-                                       %  -pi/2,  0,  0.577; %Hinge 3
-                                       %  -pi/2,  0,  pi-0.577;]); %hinge 4 %rad
+drone_params.transforms.body_hinge_r(:,:,1) = Rzmat((-pi+0.577)); %([-pi/2,  0, (-pi+0.577); %Hinge 1
+drone_params.transforms.body_hinge_r(:,:,2) = Rzmat((-0.577));    %  -pi/2,  0,  -0.577; %Hinge 2
+drone_params.transforms.body_hinge_r(:,:,3) = Rzmat((0.577));     %  -pi/2,  0,  0.577; %Hinge 3
+drone_params.transforms.body_hinge_r(:,:,4) = Rzmat((pi-0.577));  %  -pi/2,  0,  pi-0.577;]); %hinge 4 %rad
                                                
 
-drone_params.mechanical.Theta = [0, 0, 0, 0];                                               
-drone_params.transforms.hinge_motor_r = ([ pi/2,  0, drone_params.mechanical.Theta(1);
-                                           pi/2,  0, drone_params.mechanical.Theta(2);
-                                           pi/2,  0, drone_params.mechanical.Theta(3);
-                                           pi/2,  0, drone_params.mechanical.Theta(4)]); %rad
+drone_params.mechanical.Theta = [0, 0, 0, 0];
+% syms tht1 tht2 tht3 tht4
+% tht_symbol = [tht1 tht2 tht3 tht4];
+% for i=1:4
+%     drone_params.transforms.motors_to_hing_r(:,:,i) = Rymat(tht_symbol(i));
+% end
+% drone_params.transforms.hinge_motor_r = ([ pi/2,  0, drone_params.mechanical.Theta(1);
+%                                            pi/2,  0, drone_params.mechanical.Theta(2);
+%                                            pi/2,  0, drone_params.mechanical.Theta(3);
+%                                            pi/2,  0, drone_params.mechanical.Theta(4)]); %rad
                                        
 
 % syms th1 th2 th3 th4
