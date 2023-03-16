@@ -6,7 +6,7 @@ close all
 clc
 
 % add subfolders to path
-addpath("tools","format","plot","existing_controller")
+addpath("tools","format","plot","existing_controller","genetic_algorithm")
 
 % Load Drone State Bus
 load("DroneStateBus.mat")
