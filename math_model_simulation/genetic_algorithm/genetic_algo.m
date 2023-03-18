@@ -134,8 +134,8 @@ end
             kp_position_pid = population{i}.K(1);
             kd_position_pid = population{i}.K(2);
             ki_position_pid = population{i}.K(3);
-            kd_attitude_pid = population{i}.K(4);
-            kp_attitude_pid = population{i}.K(5);
+            kp_attitude_pid = population{i}.K(4);
+            kd_attitude_pid = population{i}.K(5);
             simulation = sim(model);
             err_z = simulation.err_position(:,3);
             err_y = simulation.err_position(:,2);
