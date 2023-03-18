@@ -76,7 +76,7 @@ while iters < max_iter && iter_seq < max_iter_seq
     else
         iter_seq = iter_seq + 1;
     end
-    iters = iter_seq + 1;
+    iters = iters + 1;
 
 end
 
