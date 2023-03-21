@@ -8,11 +8,11 @@ global model kp_z_stw kd_z_stw kp_x_stw kd_x_stw kp_y_stw kd_y_stw k11_attitude_
 
 model = 'reconfig_dev';
 
-% k_init = [kp_x_stw, kd_x_stw, ki_x_stw;
-%             kp_y_stw, kd_y_stw, ki_y_stw;
-%             kp_z_stw, kd_z_stw, ki_z_stw];
+k_init = [kp_x_stw, kd_x_stw, ki_x_stw, kp_y_stw, kd_y_stw, ki_y_stw, kp_z_stw, kd_z_stw, ki_z_stw,...
+            k11_attitude_stw k12_attitude_stw k13_attitude_stw,...
+            k21_attitude_stw k22_attitude_stw k23_attitude_stw];
 
-k_init = [kp_position_pid kd_position_pid ki_position_pid kp_attitude_pid kd_attitude_pid];
+% k_init = [kp_position_pid kd_position_pid ki_position_pid kp_attitude_pid kd_attitude_pid];
 
 pop_size = 30;
 keep_best = 10;
@@ -122,20 +122,26 @@ end
             kp_position_pid kd_position_pid ki_position_pid kp_attitude_pid kd_attitude_pid
  
         for i = 1:length(population)
-%             kp_z_stw = population{i}.K(3, 1);
-%             kd_z_stw = population{i}.K(3, 2);
-%             ki_z_stw = population{i}.K(3, 3);
-%             kp_x_stw = population{i}.K(1, 1);
-%             kd_x_stw = population{i}.K(1, 2);
-%             ki_x_stw = population{i}.K(1, 3);
-%             kp_y_stw = population{i}.K(2, 1);
-%             kd_y_stw = population{i}.K(2, 2);
-%             ki_y_stw = population{i}.K(2, 3);
-            kp_position_pid = population{i}.K(1);
-            kd_position_pid = population{i}.K(2);
-            ki_position_pid = population{i}.K(3);
-            kp_attitude_pid = population{i}.K(4);
-            kd_attitude_pid = population{i}.K(5);
+            kp_x_stw = population{i}.K(1);
+            kd_x_stw = population{i}.K(2);
+            ki_x_stw = population{i}.K(3);
+            kp_y_stw = population{i}.K(4);
+            kd_y_stw = population{i}.K(5);
+            ki_y_stw = population{i}.K(6);
+            kp_z_stw = population{i}.K(7);
+            kd_z_stw = population{i}.K(8);
+            ki_z_stw = population{i}.K(9);
+            k11_attitude_stw = population{i}.K(10);
+            k12_attitude_stw = population{i}.K(11);
+            k13_attitude_stw = population{i}.K(12);
+            k21_attitude_stw = population{i}.K(13);
+            k22_attitude_stw = population{i}.K(14);
+            k23_attitude_stw = population{i}.K(15);
+%             kp_position_pid = population{i}.K(1);
+%             kd_position_pid = population{i}.K(2);
+%             ki_position_pid = population{i}.K(3);
+%             kp_attitude_pid = population{i}.K(4);
+%             kd_attitude_pid = population{i}.K(5);
             simulation = sim(model);
             err_z = simulation.err_position(:,3);
             err_y = simulation.err_position(:,2);
@@ -150,36 +156,45 @@ end
     end
 
     function generation_result(best, gen)
-        f = figure();
-        hold on; grid on;
+%         f = figure();
+%         hold on; grid on;
         global model kp_z_stw kd_z_stw kp_x_stw kd_x_stw kp_y_stw kd_y_stw ki_z_stw ki_x_stw ki_y_stw ...
+            k11_attitude_stw k12_attitude_stw k13_attitude_stw ...
+            k21_attitude_stw k22_attitude_stw k23_attitude_stw tuning_parameter_stw ...
             kp_position_pid kd_position_pid ki_position_pid kp_attitude_pid kd_attitude_pid
-%         kp_z_stw = best.K(3, 1);
-%         kd_z_stw = best.K(3, 2);
-%         ki_z_stw = best.K(3, 3);
-%         kp_x_stw = best.K(1, 1);
-%         kd_x_stw = best.K(1, 2);
-%         ki_x_stw = best.K(1, 3);
-%         kp_y_stw = best.K(2, 1);
-%         kd_y_stw = best.K(2, 2);
-%         ki_y_stw = best.K(2, 3);
-        kp_position_pid = best.K(1);
-        kd_position_pid = best.K(2);
-        ki_position_pid = best.K(3);
-        kd_attitude_pid = best.K(4);
-        kp_attitude_pid = best.K(5);
-        simulation = sim(model);
+        kp_x_stw = best.K(1);
+        kd_x_stw = best.K(2);
+        ki_x_stw = best.K(3);
+        kp_y_stw = best.K(4);
+        kd_y_stw = best.K(5);
+        ki_y_stw = best.K(6);
+        kp_z_stw = best.K(7);
+        kd_z_stw = best.K(8);
+        ki_z_stw = best.K(9);
+        k11_attitude_stw = best.K(10);
+        k12_attitude_stw = best.K(11);
+        k13_attitude_stw = best.K(12);
+        k21_attitude_stw = best.K(13);
+        k22_attitude_stw = best.K(14);
+        k23_attitude_stw = best.K(15);
+%         kp_position_pid = best.K(1);
+%         kd_position_pid = best.K(2);
+%         ki_position_pid = best.K(3);
+%         kd_attitude_pid = best.K(4);
+%         kp_attitude_pid = best.K(5);
+%         sim(model);
         
-        plot(simulation.err_position);
-        legend('x', 'y', 'z');
-        dim = [0.2 0.5 0.3 0.3];
-        str = {string(best.K)};
+%         plot(simulation.err_position);
+%         legend('x', 'y', 'z');
+%         dim = [0.2 0.5 0.3 0.3];
+%         str = {string(best.K)};
 %         savefig(f, string(kp_z_stw)+'_'+string(kd_z_stw)+'_'+string(ki_z_stw)+'_'+string(kp_x_stw)+'_'+...
 %             string(kd_x_stw)+'_'+ string(ki_x_stw)+'_'+ string(kp_y_stw)+'_'+...
 %             string(kd_y_stw)+'_'+ string(ki_y_stw)+'_'+'best_gen' + string(gen) +'.fig');
-        savefig(f, string(kp_position_pid)+'_'+string(kd_position_pid)+'_'+string(ki_position_pid)+'_'+string(kd_attitude_pid)+'_'+...
-            string(kp_attitude_pid)+'_'+'best_gen' + string(gen) +'.fig');
-        close all;
+%         savefig(f, string(kp_position_pid)+'_'+string(kd_position_pid)+'_'+string(ki_position_pid)+'_'+string(kd_attitude_pid)+'_'+...
+%             string(kp_attitude_pid)+'_'+'best_gen' + string(gen) +'.fig');
+%         close all;
+        save("stw_best_gen_"+num2str(gen)+".mat","best");
     
     end
 
