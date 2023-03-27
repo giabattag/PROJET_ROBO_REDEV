@@ -4,7 +4,7 @@ Project done for the validation of the studies in the Robotics Major and R&D Min
 
 TBD a complete description here
 
-Authros:
+Authors:
 - BATTAGLIA, Giacomo
 - COLOMBINI, Jose
 
