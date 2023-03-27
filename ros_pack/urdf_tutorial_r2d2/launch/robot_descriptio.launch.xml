@@ -1,0 +1,8 @@
+
+<?xml version="1.0"?>
+<launch>
+
+  <!-- send urdf to param server -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find urdf_tutorial_r2d2)/urdf/4arms.urdf.xacro'" />
+
+</launch>

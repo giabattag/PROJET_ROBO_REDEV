@@ -2,13 +2,15 @@
 
 %% PD
 
-global kp_position_pid kd_position_pid kp_velocity_pid kp_attitude_pid kd_attitude_pid kp_attituderate_pid
+global kp_position_pid kd_position_pid ki_position_pid kp_velocity_pid kp_attitude_pid kd_attitude_pid ki_attitude_pid kp_attituderate_pid
 
 kp_position_pid = 2;
-kd_position_pid = 1.5;
+kd_position_pid = 2.5;
+ki_position_pid = 1;
 kp_velocity_pid = 2;
 kp_attitude_pid = 2;
 kd_attitude_pid = 0.2;
+ki_attitude_pid = 0.1;
 kp_attituderate_pid = 0.5;
 
 
