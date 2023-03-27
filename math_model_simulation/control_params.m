@@ -31,18 +31,20 @@ tuning_parameter_smc = 100;
 
 %% Supertwisting
 
-global kp_z_stw kd_z_stw kp_x_stw kd_x_stw kp_y_stw kd_y_stw k11_attitude_stw k12_attitude_stw k13_attitude_stw ...
-     k21_attitude_stw k22_attitude_stw k23_attitude_stw tuning_parameter_stw ki_z_stw ki_x_stw ki_y_stw
+% global kp_z_stw kd_z_stw kp_x_stw kd_x_stw kp_y_stw kd_y_stw k11_attitude_stw k12_attitude_stw k13_attitude_stw ...
+%      k21_attitude_stw k22_attitude_stw k23_attitude_stw tuning_parameter_stw ki_z_stw ki_x_stw ki_y_stw
+global       k11_attitude_stw k12_attitude_stw k13_attitude_stw ...
+     k21_attitude_stw k22_attitude_stw k23_attitude_stw tuning_parameter_stw   
 
-kp_z_stw = 8;
-kd_z_stw = 6;
-ki_z_stw = 4;
-kp_x_stw = 20;
-kd_x_stw = 30;
-ki_x_stw = 0;
-kp_y_stw = 10;
-kd_y_stw = 10;
-ki_y_stw = 0;
+% kp_z_stw = 8;
+% kd_z_stw = 6;
+% ki_z_stw = 4;
+% kp_x_stw = 20;
+% kd_x_stw = 30;
+% ki_x_stw = 0;
+% kp_y_stw = 10;
+% kd_y_stw = 10;
+% ki_y_stw = 0;
 
 
 dDeltaM = 10;
