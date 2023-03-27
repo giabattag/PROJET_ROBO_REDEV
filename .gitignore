@@ -1,0 +1,8 @@
+math_model_simulation/slprj/
+slprj/
+
+*.asv
+
+*.autosave
+
+*.original

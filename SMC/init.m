@@ -8,7 +8,7 @@ init_data
 % four_rotors = false;
 two_rotors = false;
 
-sim('quad_control');
+sim('quad_control1');
 
 x=xyz(:,1);y=xyz(:,2);z=xyz(:,3);
 phi=phi_tht_psi(:,1);tht=phi_tht_psi(:,2);psi=phi_tht_psi(:,3);
