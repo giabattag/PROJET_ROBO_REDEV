@@ -1,0 +1,20 @@
+motor_speed:
+  type: sensor_msgs/JointState
+  w1:
+    min: -10
+    max: 15
+    to: position[0]
+  w2:
+    min: -10
+    max: 15
+    to: position[1]
+  w3:
+    min: -10
+    max: 15
+    to: position[2]
+  w4:
+    min: -10
+    max: 15
+    to: position[4]
+  name: ["prop_1", "prop_2", "prop_3", "prop_4"]
+    
