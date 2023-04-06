@@ -4,7 +4,7 @@ from glob import glob
 from setuptools import setup
 from setuptools import find_packages
 
-package_name = 'urdf_tutorial_r2d2'
+package_name = 'projet_robo_redev'
 
 setup(
     name=package_name,
@@ -30,8 +30,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'state_publisher = urdf_tutorial_r2d2.state_publisher:main',
-            'control = urdf_tutorial_r2d2.control:main'
+            'state_publisher = projet_robo_redev.state_publisher:main',
+            'control = projet_robo_redev.control:main'
         ],
     },
 )

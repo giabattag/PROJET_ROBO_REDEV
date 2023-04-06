@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(urdf_tutorial_r2d2)
+project(projet_robo_redev)
 
 set(CMAKE_CXX_STANDARD 14)
 

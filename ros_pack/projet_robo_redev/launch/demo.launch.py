@@ -11,7 +11,7 @@ def generate_launch_description():
 
     urdf_file_name = '4arms.urdf'
     urdf = os.path.join(
-        get_package_share_directory('urdf_tutorial_r2d2'),
+        get_package_share_directory('projet_robo_redev'),
         urdf_file_name)
     with open(urdf, 'r') as infp:
         robot_desc = infp.read()
@@ -31,12 +31,12 @@ def generate_launch_description():
                             }],
             arguments=[urdf]),
         Node(
-            package='urdf_tutorial_r2d2',
+            package='projet_robo_redev',
             executable='state_publisher',
             name='state_publisher',
             output='screen'),
         # Node(
-        #     package='urdf_tutorial_r2d2',
+        #     package='projet_robo_redev',
         #     executale='control',
         #     name='control',
         #     output='screen'
